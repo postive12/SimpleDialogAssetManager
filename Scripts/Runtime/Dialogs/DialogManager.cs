@@ -30,8 +30,8 @@ namespace DialogSystem.Scripts.Runtime.Dialogs
         private static DialogManager _instance;
         [SerializeField] private DialogSet _currentDialogSet = null;
         [SerializeField] private DialogPlot _currentDialogPlot = null;
-        [SerializeReference] private List<ISpeaker> _speakers = new List<ISpeaker>();
-        [SerializeReference] private List<IEventInvoker> _eventInvokers = new List<IEventInvoker>();
+        private List<ISpeaker> _speakers = new List<ISpeaker>();
+        private List<IEventInvoker> _eventInvokers = new List<IEventInvoker>();
 
         private void Awake()
         {
@@ -50,6 +50,11 @@ namespace DialogSystem.Scripts.Runtime.Dialogs
         }
         public void RequestDialog()
         {
+            if (_currentDialogPlot == null) return;
+            if (_currentDialogPlot.DialogPlotGraph.IsPlotEnd) {
+                _currentDialogPlot = null;
+                return;
+            }
             var data = _currentDialogPlot.DialogPlotGraph.CurrentNode;
             if (data == null) {
                 StringBuilder error = new StringBuilder();

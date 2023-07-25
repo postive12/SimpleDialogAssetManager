@@ -8,6 +8,7 @@ namespace DialogSystem.Scripts.Runtime.Dialogs
     [CreateAssetMenu(menuName = "DialogSystem/DialogPlotGraph", fileName = "DialogPlotGraph")]
     public class DialogPlotGraph : NodeGraph
     {
+        public bool IsPlotEnd => CurrentNode == null;
         public DialogBaseNode CurrentNode { get; private set; } = null;
         public void PlayPlot()
         {
