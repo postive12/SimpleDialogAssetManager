@@ -2,7 +2,7 @@
 {
     public interface IEventInvoker
     {
-        public string InvokerId { get;protected set; }
+        public string InvokerTag { get;protected set; }
         public void Invoke(string eventName);
     }
 }

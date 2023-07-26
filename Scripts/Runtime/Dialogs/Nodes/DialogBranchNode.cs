@@ -7,8 +7,9 @@ namespace DialogSystem.Nodes
 {
     public class DialogBranchNode : DialogBaseNode
     {
+        public string SelectorTag = "Selections";
         public int SelectIndex = 0;
-        [TextArea][Output(dynamicPortList = true)] public List<string> Selections;
+        [Output(dynamicPortList = true)] public List<DialogContent> Selections;
         protected override void Init()
         {
             base.Init();

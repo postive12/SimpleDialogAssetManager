@@ -7,15 +7,15 @@ namespace DialogSystem.Runtime.Dialogs.Speakers
 {
     public class DialogSpeaker : MonoBehaviour, ISpeaker
     {
-        string ISpeaker.SpeakerId {
+        string ISpeaker.SpeakerTag {
             get {
-                return _speakerId;
+                return _speakerTag;
             }
             set {
-                _speakerId = value;
+                _speakerTag = value;
             }
         }
-        [TagSelector][SerializeField] private string _speakerId = "NONE";
+        [TagSelector][SerializeField] private string _speakerTag = "NONE";
         [SerializeField] private UnityEvent<string> _onReceiveDialog;
         private void Start() {
             DialogManager.Instance.AddSpeaker(this);

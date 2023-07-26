@@ -2,7 +2,7 @@
 {
     public interface ISpeaker
     {
-        public string SpeakerId { get; protected set; }
+        public string SpeakerTag { get; protected set; }
         public void Speak(string dialog);
     }
 }

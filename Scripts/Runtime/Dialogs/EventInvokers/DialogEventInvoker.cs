@@ -7,15 +7,15 @@ namespace DialogSystem.Runtime.Dialogs.EventInvokers
 {
     public class DialogEventInvoker : MonoBehaviour,IEventInvoker
     {
-        string IEventInvoker.InvokerId {
+        string IEventInvoker.InvokerTag {
             get {
-                return _invokerId;
+                return _invokerTag;
             }
             set {
-                _invokerId = value;
+                _invokerTag = value;
             }
         }
-        [TagSelector][SerializeField]private string _invokerId = "NONE";
+        [TagSelector][SerializeField]private string _invokerTag = "NONE";
         [SerializeField] private UnityEvent<string> _onInvokeEvent;
         private void Start() {
             DialogManager.Instance.AddEventInvoker(this);
