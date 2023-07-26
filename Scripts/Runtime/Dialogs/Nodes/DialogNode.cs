@@ -4,14 +4,17 @@ using UnityEngine;
 namespace DialogSystem.Nodes
 {
     public class DialogNode : DialogBaseNode {
-        public Dialog Line;
-        public override DialogBaseNode GetNext() {
-            
+        public Dialog Line => _line;
+        [SerializeField] private Dialog _line;
+        public override DialogBaseNode GetNext() 
+        {
+            //Debug.Log("DialogNode : GetNext");
             //if next is null log error
             var port = GetOutputPort("Next");
-            var connections = port.GetConnections();
-            if (connections.Count == 0) return null;
-            return connections[0].node as DialogBaseNode;
+            if (port.ConnectionCount == 0) {
+                return null;
+            }
+            return port?.GetConnection(0)?.node as DialogBaseNode;
         }
     }
 }

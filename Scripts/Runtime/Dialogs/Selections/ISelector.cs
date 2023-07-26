@@ -2,7 +2,7 @@
 using DialogSystem.Nodes;
 using DialogSystem.Structure;
 
-namespace DialogSystem.Scripts.Runtime.Dialogs.Selections
+namespace DialogSystem.Runtime.Dialogs.Selections
 {
     public interface ISelector
     {

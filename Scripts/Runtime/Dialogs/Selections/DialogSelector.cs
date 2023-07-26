@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using DialogSystem.Attributes;
 using DialogSystem.Nodes;
+using DialogSystem.Scripts.Runtime.Dialogs;
 using DialogSystem.Structure;
 using UnityEngine;
 
-namespace DialogSystem.Scripts.Runtime.Dialogs.Selections
+namespace DialogSystem.Runtime.Dialogs.Selections
 {
     public class DialogSelector : MonoBehaviour,ISelector
     {
@@ -27,6 +28,7 @@ namespace DialogSystem.Scripts.Runtime.Dialogs.Selections
         }
         public void CreateSelections(List<DialogContent> selections, DialogBranchNode node)
         {
+            _targetNode = node;
             int count = 0;
             for (count = 0; count  < selections.Count && count < _selectionComponents.Count; count++) {
                 _selectionComponents[count].Init(count,selections[count],this);

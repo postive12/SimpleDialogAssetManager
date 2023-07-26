@@ -1,10 +1,13 @@
-﻿using DialogSystem.Structure;
+﻿using System;
+using DialogSystem.Structure;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-namespace DialogSystem.Scripts.Runtime.Dialogs.Selections
+namespace DialogSystem.Runtime.Dialogs.Selections
 {
+    //Add Button component when creating a new DialogSelection
+    [RequireComponent(typeof(UnityEngine.UI.Button))]
     public class DialogSelection : MonoBehaviour, ISelection
     {
         int ISelection.SelectionIndex {
@@ -23,15 +26,21 @@ namespace DialogSystem.Scripts.Runtime.Dialogs.Selections
                 _parentSelector1 = value;
             }
         }
-        [SerializeField] private DialogSelector _parentSelector;
         [Header("Init Events")]
         [SerializeField] private UnityEvent<int> _onInitSelectionIndex;
         [SerializeField] private UnityEvent<string> _onInitSelectionContent;
         [Header("Show/Hide Events")]
         [SerializeField] private UnityEvent _onShowSelectionEvent;
         [SerializeField] private UnityEvent _onHideSelectionEvent;
+        private DialogSelector _parentSelector;
         private int _selectionIndex = 0;
         private DialogSelector _parentSelector1;
+        private void Start()
+        {
+            GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => {
+                _parentSelector.Select(_selectionIndex);
+            });
+        }
         public void Init(int index ,DialogContent content, DialogSelector parentSelector)
         {
             _selectionIndex = index;
@@ -41,7 +50,7 @@ namespace DialogSystem.Scripts.Runtime.Dialogs.Selections
         }
         public void Show() {
             //If there is no show event, then activate the gameobject
-            if (_onShowSelectionEvent == null) {
+            if (_onShowSelectionEvent.GetPersistentEventCount() <= 0) {
                 gameObject.SetActive(true);
                 return;
             }
@@ -50,15 +59,11 @@ namespace DialogSystem.Scripts.Runtime.Dialogs.Selections
         public void Hide()
         {
             //If there is no hide event, then deactivate the gameobject
-            if (_onHideSelectionEvent == null) {
+            if (_onHideSelectionEvent.GetPersistentEventCount() <= 0) {
                 gameObject.SetActive(false);
                 return;
             }
             _onHideSelectionEvent?.Invoke();
-        }
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            _parentSelector.Select(_selectionIndex);
         }
     }
 }

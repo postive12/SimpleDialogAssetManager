@@ -1,4 +1,5 @@
-﻿using DialogSystem.Structure;
+﻿using System;
+using DialogSystem.Structure;
 using XNode;
 
 namespace DialogSystem.Nodes
@@ -10,6 +11,8 @@ namespace DialogSystem.Nodes
         [Input(backingValue = ShowBackingValue.Never)] public DialogBaseNode Previous;
         [Output(backingValue = ShowBackingValue.Never)] public DialogBaseNode Next;
         public abstract DialogBaseNode GetNext();
+        public virtual void ResetNode() { }
+        public virtual bool CanGoNext() { return true; }
         public override object GetValue(NodePort port) {
             if (port.fieldName == "Next") return GetInputValue<DialogBaseNode>("Previous", Previous);
             else return null;

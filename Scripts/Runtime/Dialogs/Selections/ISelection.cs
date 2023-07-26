@@ -1,9 +1,9 @@
 ﻿using DialogSystem.Structure;
 using UnityEngine.EventSystems;
 
-namespace DialogSystem.Scripts.Runtime.Dialogs.Selections
+namespace DialogSystem.Runtime.Dialogs.Selections
 {
-    public interface ISelection : IPointerClickHandler
+    public interface ISelection
     {
         public int SelectionIndex { get; protected set; }
         public DialogSelector ParentSelector { get; protected set; }

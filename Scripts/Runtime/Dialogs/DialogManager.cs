@@ -3,7 +3,7 @@ using System.Text;
 using DialogSystem.Nodes;
 using DialogSystem.Runtime.Dialogs.EventInvokers;
 using DialogSystem.Runtime.Dialogs.Speakers;
-using DialogSystem.Scripts.Runtime.Dialogs.Selections;
+using DialogSystem.Runtime.Dialogs.Selections;
 using DialogSystem.Structure;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -55,11 +55,16 @@ namespace DialogSystem.Scripts.Runtime.Dialogs
         public void RequestDialog()
         {
             if (_currentDialogPlot == null) return;
+            if (!_currentDialogPlot.DialogPlotGraph.IsNextAvailable()) {
+                Debug.Log("Dialog Next Not Available");
+                return;
+            }
+            var data = _currentDialogPlot.DialogPlotGraph.Next();
             if (_currentDialogPlot.DialogPlotGraph.IsPlotEnd) {
+                Debug.Log("Dialog End");
                 _currentDialogPlot = null;
                 return;
             }
-            var data = _currentDialogPlot.DialogPlotGraph.CurrentNode;
             if (data == null) {
                 StringBuilder error = new StringBuilder();
                 error.Append("Can't find type dialog node!");
@@ -79,7 +84,6 @@ namespace DialogSystem.Scripts.Runtime.Dialogs
                     if (branchNode != null) ShowBranch(branchNode);
                     break;
             }
-            _currentDialogPlot.DialogPlotGraph.Next();
         }
         /// <summary>
         /// Show dialog from dialog parameter

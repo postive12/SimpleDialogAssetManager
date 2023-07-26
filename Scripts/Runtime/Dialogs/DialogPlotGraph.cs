@@ -8,27 +8,26 @@ namespace DialogSystem.Scripts.Runtime.Dialogs
     [CreateAssetMenu(menuName = "DialogSystem/DialogPlotGraph", fileName = "DialogPlotGraph")]
     public class DialogPlotGraph : NodeGraph
     {
-        public bool IsPlotEnd => CurrentNode == null;
+        public bool IsPlotEnd => (CurrentNode == null && !_isStart);
+        //Need to remake start and end point
         public DialogBaseNode CurrentNode { get; private set; } = null;
-        public void PlayPlot()
-        {
-            CurrentNode = (DialogBaseNode) nodes[0];
+        private bool _isStart = false;
+        public void PlayPlot() {
+            _isStart = true;
         }
-        public DialogBaseNode Next(int index = -1) {
-            if (CurrentNode == null) return null;
-            if (index == -1) {
-                CurrentNode = CurrentNode.GetNext();
+        public DialogBaseNode Next() {
+            if (_isStart) {
+                _isStart = false;
+                CurrentNode = (DialogBaseNode) nodes[0];
                 return CurrentNode;
             }
-            //Check is the dialog is a branch
-            if (CurrentNode.Type != DialogType.BRANCH) return CurrentNode;
-            
-            //If dialog is a branch, set the index and get the next node
-            var branch = CurrentNode as DialogBranchNode;
-            if (branch == null) return null;
-            branch.SelectIndex = index;
-            CurrentNode = branch.GetNext();
+            if (CurrentNode == null) return null;
+            if (!CurrentNode.CanGoNext()) return CurrentNode;
+            CurrentNode = CurrentNode.GetNext();
             return CurrentNode;
+        }
+        public bool IsNextAvailable() {
+            return _isStart||(CurrentNode != null && CurrentNode.CanGoNext());
         }
     }
 }
