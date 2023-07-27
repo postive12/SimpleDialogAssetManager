@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 
 namespace DialogSystem.Runtime.Dialogs
 {
+    [RequireComponent(typeof(DialogPlotSelector))]
     //Create DialogManager as a singleton
     public class DialogManager : MonoBehaviour
     {
@@ -90,6 +91,7 @@ namespace DialogSystem.Runtime.Dialogs
             if (IsStopRequest) return;
             //If current dialog plot is null, return
             if (_currentDialogPlot == null) return;
+            //Debug.Log("_currentDialogPlot != null");
             //If can't get next dialog node, return
             if (!_currentDialogPlot.DialogPlotGraph.IsNextAvailable()) {
                 Debug.Log("Dialog Next Not Available");
