@@ -1,5 +1,7 @@
 ﻿using System;
 using DialogSystem.Structure;
+using UnityEngine;
+using UnityEngine.Serialization;
 using XNode;
 
 namespace DialogSystem.Nodes
@@ -10,6 +12,12 @@ namespace DialogSystem.Nodes
         public DialogType Type { get; protected set; } = DialogType.DIALOG;
         [Input(backingValue = ShowBackingValue.Never)] public DialogBaseNode Previous;
         [Output(backingValue = ShowBackingValue.Never)] public DialogBaseNode Next;
+        public bool IsEndPast {
+            get {
+                return _isEndPast;
+            }
+        }
+        [SerializeField] private bool _isEndPast = true;
         public abstract DialogBaseNode GetNext();
         public virtual void ResetNode() { }
         public virtual bool CanGoNext() { return true; }

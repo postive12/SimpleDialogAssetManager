@@ -14,6 +14,9 @@ namespace DialogSystem.Scripts.Runtime.Dialogs
     public class DialogManager : MonoBehaviour
     {
         public const string DIALOG_PATH = "Dialogs/";
+        /// <summary>
+        /// Singleton instance of DialogManager
+        /// </summary>
         public static DialogManager Instance {
             get {
                 if (_instance != null) {
@@ -29,11 +32,36 @@ namespace DialogSystem.Scripts.Runtime.Dialogs
             }
         }
         private static DialogManager _instance;
+        /// <summary>
+        /// Pause dialog load when IsPause is true
+        /// </summary>
+        public bool IsPause { get; set; } = false;
         [SerializeField] private DialogSet _currentDialogSet = null;
         [SerializeField] private DialogPlot _currentDialogPlot = null;
-        private List<ISpeaker> _speakers = new List<ISpeaker>();
-        private List<IEventInvoker> _eventInvokers = new List<IEventInvoker>();
-        private List<ISelector> _selectors = new List<ISelector>();
+        private static List<ISpeaker> _speakers = new List<ISpeaker>();
+        private static List<IEventInvoker> _eventInvokers = new List<IEventInvoker>();
+        private static List<ISelector> _selectors = new List<ISelector>();
+        /// <summary>
+        /// Add speaker to dialog manager
+        /// </summary>
+        /// <param name="dialogSpeaker"></param>
+        public static void AddSpeaker(DialogSpeaker dialogSpeaker) {
+            _speakers.Add(dialogSpeaker);
+        }
+        /// <summary>
+        /// Add event invoker to dialog manager
+        /// </summary>
+        /// <param name="eventInvoker"></param>
+        public static void AddEventInvoker(IEventInvoker eventInvoker) {
+            _eventInvokers.Add(eventInvoker);
+        }
+        /// <summary>
+        /// Add selector to dialog manager
+        /// </summary>
+        /// <param name="selector"></param>
+        public static void AddSelector(ISelector selector) {
+            _selectors.Add(selector);
+        }
         private void Awake()
         {
             if (_instance != null && _instance != this) {
@@ -48,23 +76,31 @@ namespace DialogSystem.Scripts.Runtime.Dialogs
                 DontDestroyOnLoad(gameObject);
             }
             SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
         }
         /// <summary>
         /// Load dialog from dialog graph
         /// </summary>
         public void RequestDialog()
         {
+            //If dialog is paused, return
+            if (IsPause) return;
+            //If current dialog plot is null, return
             if (_currentDialogPlot == null) return;
+            //If can't get next dialog node, return
             if (!_currentDialogPlot.DialogPlotGraph.IsNextAvailable()) {
                 Debug.Log("Dialog Next Not Available");
                 return;
             }
+            //Get next dialog node
             var data = _currentDialogPlot.DialogPlotGraph.Next();
+            //If dialog is end, return
             if (_currentDialogPlot.DialogPlotGraph.IsPlotEnd) {
                 Debug.Log("Dialog End");
                 _currentDialogPlot = null;
                 return;
             }
+            //If dialog node is null, return
             if (data == null) {
                 StringBuilder error = new StringBuilder();
                 error.Append("Can't find type dialog node!");
@@ -73,11 +109,12 @@ namespace DialogSystem.Scripts.Runtime.Dialogs
                 Debug.LogError(error.ToString());
                 return;
             }
+            //Show dialog from dialog node
             var type = data.Type;
             switch (type) {
                 case DialogType.DIALOG:
                     var dialogNode = data as DialogNode;
-                    if (dialogNode != null) ShowDialog(dialogNode.Line);
+                    if (dialogNode != null) ShowDialog(dialogNode);
                     break;
                 case DialogType.BRANCH:
                     var branchNode = data as DialogBranchNode;
@@ -89,12 +126,26 @@ namespace DialogSystem.Scripts.Runtime.Dialogs
         /// Show dialog from dialog parameter
         /// </summary>
         /// <param name="dialog">The dialog that contains data</param>
-        public void ShowDialog(Dialog dialog)
+        public void ShowDialog(DialogNode dialogNode)
         {
-            var targets = _speakers.FindAll(speaker => speaker.SpeakerTag == dialog.SpeakerTag);
-            targets.ForEach(target => target.Speak(dialog.DialogContent.Content));
+            var dialog = dialogNode.Line;
+            if (dialog.SpeakerTag != "NONE") {
+                var targets = _speakers.FindAll(speaker => speaker.SpeakerTag == dialog.SpeakerTag);
+                targets.ForEach(target => target.Speak(dialog.DialogContent.Content));
+                foreach (var speaker in _speakers) {
+                    if (speaker.SpeakerTag == dialog.SpeakerTag) {
+                        speaker.Speak(dialog.DialogContent.Content);
+                    } else if(dialogNode.IsEndPast){
+                        speaker.EndSpeak();
+                    }
+                }
+            }
             foreach (var dialogEvent in dialog.DialogEvents) {
-                var invokers = _eventInvokers.FindAll(invoker => dialogEvent.EventTargets.Contains(invoker.InvokerTag));
+                var invokers = 
+                    _eventInvokers.FindAll(
+                        invoker => 
+                            (invoker.InvokerTag != "NONE" && dialogEvent.EventTargets.Contains(invoker.InvokerTag))
+                        );
                 invokers.ForEach(speaker => speaker.Invoke(dialogEvent.EventName));
             }
         }
@@ -116,6 +167,7 @@ namespace DialogSystem.Scripts.Runtime.Dialogs
         /// <param name="plotId">Id of Plot</param>
         public void SelectDialogPlot(string plotId)
         {
+            Debug.Log("Select Dialog Plot: " + plotId);
             if (!_currentDialogSet) {
                 StringBuilder error = new StringBuilder();
                 error.Append("No dialog set found!"); 
@@ -128,18 +180,15 @@ namespace DialogSystem.Scripts.Runtime.Dialogs
                 return;
             }
             _currentDialogPlot.DialogPlotGraph.PlayPlot();
+            RequestDialog();
         }
         /// <summary>
         /// Load dialog set when scene loaded with scene name
         /// </summary>
         /// <param name="scene">Current Scene</param>
         /// <param name="mode">Load mode</param>
-        public void OnSceneLoaded(Scene scene,LoadSceneMode mode)
+        private void OnSceneLoaded(Scene scene,LoadSceneMode mode)
         {
-            //When scene loaded, clear all data
-            _speakers.Clear();
-            _eventInvokers.Clear();
-            _selectors.Clear();
             //Find dialog set with scene name
             var currentScene = scene.name;
             _currentDialogSet = Resources.Load<DialogSet>(DIALOG_PATH + currentScene);
@@ -156,25 +205,16 @@ namespace DialogSystem.Scripts.Runtime.Dialogs
             SelectDialogPlot(_currentDialogSet.StartUpPlotId);
         }
         /// <summary>
-        /// Add speaker to dialog manager
+        /// Reset all data when scene unloaded
         /// </summary>
-        /// <param name="dialogSpeaker"></param>
-        public void AddSpeaker(DialogSpeaker dialogSpeaker) {
-            _speakers.Add(dialogSpeaker);
-        }
-        /// <summary>
-        /// Add event invoker to dialog manager
-        /// </summary>
-        /// <param name="eventInvoker"></param>
-        public void AddEventInvoker(IEventInvoker eventInvoker) {
-            _eventInvokers.Add(eventInvoker);
-        }
-        /// <summary>
-        /// Add selector to dialog manager
-        /// </summary>
-        /// <param name="selector"></param>
-        public void AddSelector(ISelector selector) {
-            _selectors.Add(selector);
+        /// <param name="scene"></param>
+        private void OnSceneUnloaded(Scene scene)
+        {
+            _currentDialogSet = null;
+            _currentDialogPlot = null;
+            _eventInvokers.Clear();
+            _selectors.Clear();
+            _speakers.Clear();
         }
         /// <summary>
         /// Clear all data when dialog manager disabled

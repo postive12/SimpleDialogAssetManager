@@ -11,7 +11,7 @@ namespace DialogSystem.Nodes
     {
         public string SelectorTag => _selectorTag;
         [HideInInspector]public int SelectIndex = -1;
-        [TagSelector][SerializeField] private string _selectorTag = "Selections";
+        [DialogTagSelector][SerializeField] private string _selectorTag = "Selections";
         [Output(dynamicPortList = true)] public List<DialogContent> Selections = new List<DialogContent>();
         protected override void Init()
         {

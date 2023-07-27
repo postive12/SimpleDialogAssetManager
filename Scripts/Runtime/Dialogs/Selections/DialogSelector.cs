@@ -18,13 +18,13 @@ namespace DialogSystem.Runtime.Dialogs.Selections
                 _selectorTag = value;
             }
         }
-        [TagSelector][SerializeField] private string _selectorTag = "NONE";
+        [DialogTagSelector][SerializeField] private string _selectorTag = "NONE";
         [SerializeField] private GameObject _selectionPrefab = null;
         [SerializeField] private List<DialogSelection> _selectionComponents = new List<DialogSelection>();
         private DialogBranchNode _targetNode = null;
-        private void Start()
+        private void Awake()
         {
-            DialogManager.Instance.AddSelector(this);
+            DialogManager.AddSelector(this);
         }
         public void CreateSelections(List<DialogContent> selections, DialogBranchNode node)
         {

@@ -15,10 +15,10 @@ namespace DialogSystem.Runtime.Dialogs.EventInvokers
                 _invokerTag = value;
             }
         }
-        [TagSelector][SerializeField]private string _invokerTag = "NONE";
+        [DialogTagSelector][SerializeField]private string _invokerTag = "NONE";
         [SerializeField] private UnityEvent<string> _onInvokeEvent;
-        private void Start() {
-            DialogManager.Instance.AddEventInvoker(this);
+        private void Awake() {
+            DialogManager.AddEventInvoker(this);
         }
 
         public void Invoke(string eventName) {

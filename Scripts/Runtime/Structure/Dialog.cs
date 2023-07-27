@@ -7,7 +7,7 @@ namespace DialogSystem.Structure
     [Serializable]
     public class Dialog
     {
-        [TagSelector] public string SpeakerTag;
+        [DialogTagSelector] public string SpeakerTag;
         public List<DialogEvent> DialogEvents;
         public DialogContent DialogContent;
     }

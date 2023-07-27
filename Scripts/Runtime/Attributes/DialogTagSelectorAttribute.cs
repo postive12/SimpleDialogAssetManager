@@ -2,7 +2,7 @@
 
 namespace DialogSystem.Attributes
 {
-    public class TagSelectorAttribute : PropertyAttribute
+    public class DialogTagSelectorAttribute : PropertyAttribute
     {
         public bool UseDefaultTagFieldDrawer = false;
     }
