@@ -36,6 +36,7 @@ namespace DialogSystem.Runtime.Dialogs
         /// Pause dialog load when IsPause is true
         /// </summary>
         public bool IsPause { get; set; } = false;
+        public bool IsStopRequest { get; set; } = false;
         [SerializeField] private DialogSet _currentDialogSet = null;
         [SerializeField] private DialogPlot _currentDialogPlot = null;
         private static List<ISpeaker> _speakers = new List<ISpeaker>();
@@ -85,6 +86,8 @@ namespace DialogSystem.Runtime.Dialogs
         {
             //If dialog is paused, return
             if (IsPause) return;
+            //If dialog is stop request, return
+            if (IsStopRequest) return;
             //If current dialog plot is null, return
             if (_currentDialogPlot == null) return;
             //If can't get next dialog node, return
