@@ -1,5 +1,5 @@
 ﻿using System;
-using DialogSystem.Scripts.Runtime.Dialogs;
+using DialogSystem.Runtime.Dialogs;
 
 namespace DialogSystem.Structure
 {

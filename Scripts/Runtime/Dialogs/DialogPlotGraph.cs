@@ -3,7 +3,7 @@ using DialogSystem.Structure;
 using UnityEngine;
 using XNode;
 
-namespace DialogSystem.Scripts.Runtime.Dialogs
+namespace DialogSystem.Runtime.Dialogs
 {
     [CreateAssetMenu(menuName = "DialogSystem/DialogPlotGraph", fileName = "DialogPlotGraph")]
     public class DialogPlotGraph : NodeGraph

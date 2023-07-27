@@ -1,4 +1,4 @@
-﻿using DialogSystem.Scripts.Runtime.Dialogs;
+﻿using DialogSystem.Runtime.Dialogs;
 using XNodeEditor;
 
 namespace DialogSystem.Editor

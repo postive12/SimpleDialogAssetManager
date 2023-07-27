@@ -1,5 +1,4 @@
 ﻿using DialogSystem.Attributes;
-using DialogSystem.Scripts.Runtime.Dialogs;
 using UnityEngine;
 using UnityEngine.Events;
 

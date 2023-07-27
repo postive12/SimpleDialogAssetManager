@@ -8,7 +8,7 @@ using DialogSystem.Structure;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace DialogSystem.Scripts.Runtime.Dialogs
+namespace DialogSystem.Runtime.Dialogs
 {
     //Create DialogManager as a singleton
     public class DialogManager : MonoBehaviour

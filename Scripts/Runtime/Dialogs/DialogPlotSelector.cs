@@ -3,7 +3,7 @@ using System.Linq;
 using DialogSystem.Runtime.Dialogs.EventInvokers;
 using UnityEngine;
 
-namespace DialogSystem.Scripts.Runtime.Dialogs
+namespace DialogSystem.Runtime.Dialogs
 {
     public class DialogPlotSelector :MonoBehaviour, IEventInvoker
     {

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DialogSystem.Attributes;
 using DialogSystem.Nodes;
-using DialogSystem.Scripts.Runtime.Dialogs;
 using DialogSystem.Structure;
 using UnityEngine;
 
