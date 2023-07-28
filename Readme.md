@@ -1,5 +1,5 @@
-# SmartDialogAssetMaker - SDAM
- The dialog system created by xNode
+# SimpleDialogAssetMaker - SDAM
+The dialog system created by xNode
 
 ## How to use
 
