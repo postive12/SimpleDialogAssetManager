@@ -91,6 +91,7 @@ namespace DialogSystem.Runtime.Dialogs
             if (IsStopRequest) return;
             //If current dialog plot is null, return
             if (_currentDialogPlot == null) return;
+            if (_currentDialogPlot.DialogPlotGraph == null) return;
             //Debug.Log("_currentDialogPlot != null");
             //If can't get next dialog node, return
             if (!_currentDialogPlot.DialogPlotGraph.IsNextAvailable()) {
