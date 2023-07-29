@@ -103,7 +103,7 @@ namespace DialogSystem.Runtime.Dialogs
             //If dialog is end, return
             if (_currentDialogPlot.DialogPlotGraph.IsPlotEnd) {
                 Debug.Log("Dialog End");
-                _currentDialogPlot = null;
+                EndPlot();
                 return;
             }
             //If dialog node is null, return
@@ -187,6 +187,14 @@ namespace DialogSystem.Runtime.Dialogs
             }
             _currentDialogPlot.DialogPlotGraph.PlayPlot();
             RequestDialog();
+        }
+        /// <summary>
+        /// Invoke when dialog is end
+        /// </summary>
+        public void EndPlot()
+        {
+            _currentDialogPlot = null;
+            _speakers.ForEach(speaker => speaker.EndSpeak());
         }
         /// <summary>
         /// Load dialog set when scene loaded with scene name
