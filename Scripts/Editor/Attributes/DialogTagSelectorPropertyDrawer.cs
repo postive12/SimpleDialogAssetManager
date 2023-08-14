@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace DialogSystem.Attributes
 {
@@ -13,6 +15,7 @@ namespace DialogSystem.Attributes
         };
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            CheckTags();
             if (property.propertyType == SerializedPropertyType.String)
             {
                 EditorGUI.BeginProperty(position, label, property);
@@ -48,6 +51,19 @@ namespace DialogSystem.Attributes
             {
                 EditorGUI.PropertyField(position, property, label);
             }
+        }
+        private void CheckTags()
+        {
+            //Check DialogPlotSelector tag is in the unity tag list
+            var tagList = UnityEditorInternal.InternalEditorUtility.tags;
+            foreach (var tag in _customTags) {
+                if (tagList.Any(t => t == tag)) {
+                    UnityEditorInternal.InternalEditorUtility.RemoveTag(tag);
+                    Debug.LogError("You should not \"DialogPlotSelector\" as a tag, it is used by DialogPlotSelector.");
+                    Debug.LogError("Automatically remove \"DialogPlotSelector\" tag from tag list.");
+                }
+            }
+
         }
     }
 }
