@@ -12,11 +12,12 @@ using UnityEngine.Serialization;
 
 namespace DialogSystem.Runtime.Dialogs
 {
+    /// <summary>
+    /// The dialog manager that manage all dialog
+    /// </summary>
     [RequireComponent(typeof(DialogPlotSelector))]
-    //Create DialogManager as a singleton
     public class DialogManager : MonoBehaviour
     {
-        public const string DIALOG_PATH = "Dialogs/";
         /// <summary>
         /// Singleton instance of DialogManager
         /// </summary>
@@ -207,7 +208,7 @@ namespace DialogSystem.Runtime.Dialogs
         {
             //Find dialog set with scene name
             var currentScene = scene.name;
-            _currentSceneDialogPlots = Resources.Load<SceneDialogPlots>(DIALOG_PATH + currentScene);
+            _currentSceneDialogPlots = Resources.Load<SceneDialogPlots>(SDAMConst.SDAM_ASSET_FOLDER + currentScene);
             //If dialog not found, throw error
             if (!_currentSceneDialogPlots) {
                 StringBuilder error = new StringBuilder();

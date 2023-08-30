@@ -41,6 +41,12 @@ namespace DialogSystem.Runtime.Dialogs.Selections
                 _parentSelector.Select(_selectionIndex);
             });
         }
+        /// <summary>
+        /// Init the selection
+        /// </summary>
+        /// <param name="index">Index of the selection</param>
+        /// <param name="content">Content of the selection, It will pass to the OnInitSelectionContentEvent</param>
+        /// <param name="parentSelector">Parent of the selection</param>
         public void Init(int index ,DialogContent content, DialogSelector parentSelector)
         {
             _selectionIndex = index;
@@ -48,6 +54,11 @@ namespace DialogSystem.Runtime.Dialogs.Selections
             _onInitSelectionIndex?.Invoke(index);
             _onInitSelectionContent?.Invoke(content.Content);
         }
+        /// <summary>
+        /// Show the selection
+        /// If there is no show event, then activate the gameobject
+        /// But if there is a show event, invoke the event
+        /// </summary>
         public void Show() {
             //If there is no show event, then activate the gameobject
             if (_onShowSelectionEvent.GetPersistentEventCount() <= 0) {
@@ -56,6 +67,11 @@ namespace DialogSystem.Runtime.Dialogs.Selections
             }
             _onShowSelectionEvent?.Invoke();
         }
+        /// <summary>
+        /// Hide the selection
+        /// If there is no hide event, then deactivate the gameobject
+        /// But if there is a hide event, invoke the event
+        /// </summary>
         public void Hide()
         {
             //If there is no hide event, then deactivate the gameobject
