@@ -5,8 +5,10 @@ using DialogSystem.Runtime.Dialogs.EventInvokers;
 using DialogSystem.Runtime.Dialogs.Speakers;
 using DialogSystem.Runtime.Dialogs.Selections;
 using DialogSystem.Structure;
+using DialogSystem.Structure.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace DialogSystem.Runtime.Dialogs
 {
@@ -38,7 +40,7 @@ namespace DialogSystem.Runtime.Dialogs
         /// </summary>
         public bool IsPause { get; set; } = false;
         public bool IsStopRequest { get; set; } = false;
-        [SerializeField] private DialogSet _currentDialogSet = null;
+        [SerializeField] private SceneDialogPlots _currentSceneDialogPlots = null;
         [SerializeField] private DialogPlot _currentDialogPlot = null;
         private static List<ISpeaker> _speakers = new List<ISpeaker>();
         private static List<IEventInvoker> _eventInvokers = new List<IEventInvoker>();
@@ -174,13 +176,13 @@ namespace DialogSystem.Runtime.Dialogs
         public void SelectDialogPlot(string plotId)
         {
             Debug.Log("Select Dialog Plot: " + plotId);
-            if (!_currentDialogSet) {
+            if (!_currentSceneDialogPlots) {
                 StringBuilder error = new StringBuilder();
                 error.Append("No dialog set found!"); 
                 Debug.LogError(error.ToString());
                 return;
             }
-            _currentDialogPlot = _currentDialogSet.FindDialogById(plotId);
+            _currentDialogPlot = _currentSceneDialogPlots.FindDialogById(plotId);
             if (_currentDialogPlot == null) {
                 Debug.LogError("Can't find dialog plot with id: " + plotId);
                 return;
@@ -205,9 +207,9 @@ namespace DialogSystem.Runtime.Dialogs
         {
             //Find dialog set with scene name
             var currentScene = scene.name;
-            _currentDialogSet = Resources.Load<DialogSet>(DIALOG_PATH + currentScene);
+            _currentSceneDialogPlots = Resources.Load<SceneDialogPlots>(DIALOG_PATH + currentScene);
             //If dialog not found, throw error
-            if (!_currentDialogSet) {
+            if (!_currentSceneDialogPlots) {
                 StringBuilder error = new StringBuilder();
                 error.Append("No dialog set found!");
                 error.Append("\n");
@@ -216,7 +218,7 @@ namespace DialogSystem.Runtime.Dialogs
                 return;
             }
             //If dialog found, load the first dialog plot
-            SelectDialogPlot(_currentDialogSet.StartUpPlotId);
+            SelectDialogPlot(_currentSceneDialogPlots.StartUpPlotId);
         }
         /// <summary>
         /// Reset all data when scene unloaded
@@ -224,7 +226,7 @@ namespace DialogSystem.Runtime.Dialogs
         /// <param name="scene"></param>
         private void OnSceneUnloaded(Scene scene)
         {
-            _currentDialogSet = null;
+            _currentSceneDialogPlots = null;
             _currentDialogPlot = null;
             _eventInvokers.Clear();
             _selectors.Clear();
