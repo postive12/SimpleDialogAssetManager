@@ -1,4 +1,4 @@
-# SimpleDialogAssetMaker - SDAM
+# SimpleDialogAssetManager - SDAM
 
 The dialog system created with [xNode](https://github.com/Siccity/xNode) by postive
 
