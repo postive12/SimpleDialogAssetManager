@@ -10,6 +10,11 @@ namespace DialogSystem.Editor
             base.OnOpen();
             window.titleContent.text = target.name;
         }
-        
+        public override void OnWindowFocus()
+        {
+            base.OnWindowFocus();
+            window.titleContent.text = target.name;
+        }
+
     }
 }
