@@ -7,6 +7,9 @@ namespace DialogSystem.Structure.ScriptableObjects
     public class SceneDialogPlots : ScriptableObject
     {
         public string StartUpPlotId => _startUpPlotId;
+        public bool UseStartUpPlot => _useStartUpPlot;
+        
+        [SerializeField] private bool _useStartUpPlot = false;
         [SerializeField] private string _startUpPlotId = "NONE";
         [SerializeField] private List<DialogPlot> DialogPlots;
         [SerializeField] private List<DialogPlotSet> DialogPlotSets;

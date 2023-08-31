@@ -1,4 +1,6 @@
-﻿using DialogSystem.Structure.ScriptableObjects;
+﻿using System;
+using System.Collections.Generic;
+using DialogSystem.Structure.ScriptableObjects;
 using UnityEditor;
 
 namespace DialogSystem.Editor
@@ -6,17 +8,20 @@ namespace DialogSystem.Editor
     [CustomEditor(typeof(SceneDialogPlots))]
     public class SceneDialogPlotsEditor : UnityEditor.Editor
     {
-        private static readonly string[] _excludeMemeber = new string[]{"m_Script"};
-        private bool _isStartUpExist = false;
+        private SceneDialogPlots _target;
+        private void OnEnable() {
+            _target = (SceneDialogPlots)serializedObject.targetObject;
+        }
         public override void OnInspectorGUI()
         {
+            List<string> excludeMemeber = new List<string>(){"m_Script"};
             serializedObject.Update();
             EditorGUI.BeginChangeCheck();
-            foreach (var member in _excludeMemeber) {
-                DrawPropertiesExcluding(serializedObject, member);
+            if (!_target.UseStartUpPlot) {
+                excludeMemeber.Add("_startUpPlotId");
             }
-            if (EditorGUI.EndChangeCheck())
-                serializedObject.ApplyModifiedProperties();
+            DrawPropertiesExcluding(serializedObject, excludeMemeber.ToArray());
+            serializedObject.ApplyModifiedProperties();
         }
         
     }
