@@ -219,7 +219,7 @@ namespace DialogSystem.Runtime.Dialogs
                 return;
             }
             //If dialog found, load the first dialog plot
-            SelectDialogPlot(_currentSceneDialogPlots.StartUpPlotId);
+            if (_currentSceneDialogPlots.UseStartUpPlot) SelectDialogPlot(_currentSceneDialogPlots.StartUpPlotId);
         }
         /// <summary>
         /// Reset all data when scene unloaded
