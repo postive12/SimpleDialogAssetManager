@@ -16,6 +16,7 @@ namespace DialogSystem.Runtime.Dialogs.Speakers
         }
         [DialogTagSelector][SerializeField] private string _speakerTag = "NONE";
         [SerializeField] private bool _disableRequestWhenSpeaking = false;
+        [SerializeField] private bool _clearTextWhenEnd = false;
         [SerializeField] private UnityEvent<string> _onReceiveDialog;
         [SerializeField] private UnityEvent _onStartDialog;
         [SerializeField] private UnityEvent _onEndDialog;
@@ -34,7 +35,9 @@ namespace DialogSystem.Runtime.Dialogs.Speakers
             _onReceiveDialog?.Invoke(dialog);
         }
         public void EndSpeak() {
-            _onReceiveDialog?.Invoke(string.Empty);
+            if (_clearTextWhenEnd) {
+                _onReceiveDialog?.Invoke(string.Empty);
+            }
             if (_onEndDialog.GetPersistentEventCount() <= 0) {
                 gameObject.SetActive(false);
                 return;

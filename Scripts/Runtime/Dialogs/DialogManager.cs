@@ -200,6 +200,15 @@ namespace DialogSystem.Runtime.Dialogs
             _speakers.ForEach(speaker => speaker.EndSpeak());
         }
         /// <summary>
+        /// Get current dialog plot id
+        /// </summary>
+        /// <returns>The id of current plot</returns>
+        public string GetCurrentDialogPlotId()
+        {
+            if (_currentDialogPlot == null) return string.Empty;
+            return _currentDialogPlot.PlotId;
+        }
+        /// <summary>
         /// Load dialog set when scene loaded with scene name
         /// </summary>
         /// <param name="scene">Current Scene</param>
