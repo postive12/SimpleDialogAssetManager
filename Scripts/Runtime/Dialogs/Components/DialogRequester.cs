@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using DialogSystem.Runtime.Dialogs;
+using DialogSystem.Dialogs.Components.Managers;
 using UnityEngine;
 #if HAS_NEW_INPUT
     using UnityEngine.InputSystem;
@@ -7,7 +7,7 @@ using UnityEngine;
 
 
 
-namespace DialogSystem.Dialogs
+namespace DialogSystem.Dialogs.Components
 {
     public class DialogRequester : MonoBehaviour
     {

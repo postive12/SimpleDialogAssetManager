@@ -2,11 +2,10 @@
 using DialogSystem.Nodes;
 using DialogSystem.Structure;
 
-namespace DialogSystem.Runtime.Dialogs.Selections
+namespace DialogSystem.Runtime.Dialogs.Interfaces
 {
-    public interface ISelector
+    public interface ISelector : IDialogTarget
     {
-        public string SelectorTag { get; protected set; }
         public void CreateSelections(List<DialogContent> selections, DialogBranchNode node);
         public void Select(int index);
     }

@@ -1,14 +1,20 @@
 ﻿using System.Collections.Generic;
 using DialogSystem.Attributes;
+using DialogSystem.Dialogs.Components.Managers;
 using DialogSystem.Nodes;
+using DialogSystem.Runtime.Dialogs.Interfaces;
 using DialogSystem.Structure;
 using UnityEngine;
 
-namespace DialogSystem.Runtime.Dialogs.Selections
+namespace DialogSystem.Runtime.Dialogs.Components.Selections
 {
     public class DialogSelector : MonoBehaviour,ISelector
     {
-        string ISelector.SelectorTag {
+        [DialogTagSelector][SerializeField] private string _selectorTag = "NONE";
+        [SerializeField] private GameObject _selectionPrefab = null;
+        [SerializeField] private List<DialogSelection> _selectionComponents = new List<DialogSelection>();
+        private DialogBranchNode _targetNode = null;
+        string IDialogTarget.TargetTag {
             get {
                 return _selectorTag;
             }
@@ -16,10 +22,9 @@ namespace DialogSystem.Runtime.Dialogs.Selections
                 _selectorTag = value;
             }
         }
-        [DialogTagSelector][SerializeField] private string _selectorTag = "NONE";
-        [SerializeField] private GameObject _selectionPrefab = null;
-        [SerializeField] private List<DialogSelection> _selectionComponents = new List<DialogSelection>();
-        private DialogBranchNode _targetNode = null;
+        public string GetTargetTag() {
+            return _selectorTag;
+        }
         private void Awake()
         {
             DialogManager.AddSelector(this);
