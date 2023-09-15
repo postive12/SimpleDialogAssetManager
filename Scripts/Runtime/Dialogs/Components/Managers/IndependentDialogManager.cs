@@ -19,8 +19,8 @@ namespace DialogSystem.Dialogs.Components.Managers
         [SerializeField] private DialogPlotSet _dialogPlotSet = null;
         [SerializeField] private DialogPlot _currentDialogPlot = null;
         [SerializeField] private List<DialogSpeaker> _speakers = new List<DialogSpeaker>();
-        [SerializeField] private static List<DialogEventInvoker> _eventInvokers = new List<DialogEventInvoker>();
-        [SerializeField] private static List<DialogSelector> _selectors = new List<DialogSelector>();
+        [SerializeField] private List<DialogEventInvoker> _eventInvokers = new List<DialogEventInvoker>();
+        [SerializeField] private List<DialogSelector> _selectors = new List<DialogSelector>();
         /// <summary>
         /// Load dialog from dialog graph
         /// </summary>
