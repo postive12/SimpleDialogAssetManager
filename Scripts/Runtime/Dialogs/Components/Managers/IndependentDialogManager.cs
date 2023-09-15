@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using DialogSystem.Nodes;
 using DialogSystem.Runtime.Dialogs.Components;
@@ -16,11 +17,20 @@ namespace DialogSystem.Dialogs.Components.Managers
         /// </summary>
         public bool IsPause { get; set; } = false;
         public bool IsStopRequest { get; set; } = false;
+        public bool UseStartUpPlot => _useStartUpPlot;
         [SerializeField] private DialogPlotSet _dialogPlotSet = null;
+        [SerializeField] private bool _useStartUpPlot = false;
+        [SerializeField] private string _startUpPlotId = "NONE";
         [SerializeField] private DialogPlot _currentDialogPlot = null;
         [SerializeField] private List<DialogSpeaker> _speakers = new List<DialogSpeaker>();
         [SerializeField] private List<DialogEventInvoker> _eventInvokers = new List<DialogEventInvoker>();
         [SerializeField] private List<DialogSelector> _selectors = new List<DialogSelector>();
+        private void Start()
+        {
+            if (_useStartUpPlot) {
+                SelectDialogPlot(_startUpPlotId);
+            }
+        }
         /// <summary>
         /// Load dialog from dialog graph
         /// </summary>
