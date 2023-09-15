@@ -1,12 +1,20 @@
 ﻿using DialogSystem.Attributes;
+using DialogSystem.Dialogs.Components.Managers;
+using DialogSystem.Runtime.Dialogs.Interfaces;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace DialogSystem.Runtime.Dialogs.Speakers
+namespace DialogSystem.Dialogs.Components
 {
     public class DialogSpeaker : MonoBehaviour, ISpeaker
     {
-        string ISpeaker.SpeakerTag {
+        [DialogTagSelector][SerializeField] private string _speakerTag = "NONE";
+        [SerializeField] private bool _disableRequestWhenSpeaking = false;
+        [SerializeField] private bool _clearTextWhenEnd = false;
+        [SerializeField] private UnityEvent<string> _onReceiveDialog;
+        [SerializeField] private UnityEvent _onStartDialog;
+        [SerializeField] private UnityEvent _onEndDialog;
+        string IDialogTarget.TargetTag {
             get {
                 return _speakerTag;
             }
@@ -14,12 +22,9 @@ namespace DialogSystem.Runtime.Dialogs.Speakers
                 _speakerTag = value;
             }
         }
-        [DialogTagSelector][SerializeField] private string _speakerTag = "NONE";
-        [SerializeField] private bool _disableRequestWhenSpeaking = false;
-        [SerializeField] private bool _clearTextWhenEnd = false;
-        [SerializeField] private UnityEvent<string> _onReceiveDialog;
-        [SerializeField] private UnityEvent _onStartDialog;
-        [SerializeField] private UnityEvent _onEndDialog;
+        public string GetTargetTag() {
+            return _speakerTag;
+        }
         private void Awake() {
             DialogManager.AddSpeaker(this);
         }

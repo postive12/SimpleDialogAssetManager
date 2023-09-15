@@ -1,10 +1,11 @@
 ﻿using System;
+using DialogSystem.Runtime.Dialogs.Interfaces;
 using DialogSystem.Structure;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-namespace DialogSystem.Runtime.Dialogs.Selections
+namespace DialogSystem.Runtime.Dialogs.Components.Selections
 {
     //Add Button component when creating a new DialogSelection
     [RequireComponent(typeof(UnityEngine.UI.Button))]

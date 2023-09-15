@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using DialogSystem.Structure.ScriptableObjects;
+﻿using System.Collections.Generic;
+using DialogSystem.Dialogs.Components.Managers;
 using UnityEditor;
 
-namespace DialogSystem.Editor
+namespace DialogSystem.Editor.Components
 {
-    [CustomEditor(typeof(SceneDialogPlots))]
-    public class SceneDialogPlotsEditor : UnityEditor.Editor
+    [CustomEditor(typeof(IndependentDialogManager))]
+    public class IndependentDialogManagerEditor : UnityEditor.Editor
     {
-        private SceneDialogPlots _target;
+        private IndependentDialogManager _target;
         private void OnEnable() {
-            _target = (SceneDialogPlots)serializedObject.targetObject;
+            _target = (IndependentDialogManager)serializedObject.targetObject;
         }
         public override void OnInspectorGUI()
         {
@@ -23,6 +22,5 @@ namespace DialogSystem.Editor
             DrawPropertiesExcluding(serializedObject, excludeMember.ToArray());
             serializedObject.ApplyModifiedProperties();
         }
-        
     }
 }

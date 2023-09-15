@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using DialogSystem.Nodes;
-using DialogSystem.Runtime.Dialogs.EventInvokers;
-using DialogSystem.Runtime.Dialogs.Speakers;
-using DialogSystem.Runtime.Dialogs.Selections;
+using DialogSystem.Runtime.Dialogs;
+using DialogSystem.Runtime.Dialogs.Components;
+using DialogSystem.Runtime.Dialogs.Interfaces;
 using DialogSystem.Structure;
 using DialogSystem.Structure.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
-namespace DialogSystem.Runtime.Dialogs
+namespace DialogSystem.Dialogs.Components.Managers
 {
     /// <summary>
     /// The dialog manager that manage all dialog
@@ -139,10 +139,10 @@ namespace DialogSystem.Runtime.Dialogs
         {
             var dialog = dialogNode.Line;
             if (dialog.SpeakerTag != "NONE") {
-                var targets = _speakers.FindAll(speaker => speaker.SpeakerTag == dialog.SpeakerTag);
+                var targets = _speakers.FindAll(speaker => speaker.TargetTag == dialog.SpeakerTag);
                 targets.ForEach(target => target.Speak(dialog.DialogContent.Content));
                 foreach (var speaker in _speakers) {
-                    if (speaker.SpeakerTag == dialog.SpeakerTag) {
+                    if (speaker.TargetTag == dialog.SpeakerTag) {
                         speaker.Speak(dialog.DialogContent.Content);
                     } else if(dialogNode.IsEndPast){
                         speaker.EndSpeak();
@@ -153,7 +153,7 @@ namespace DialogSystem.Runtime.Dialogs
                 var invokers = 
                     _eventInvokers.FindAll(
                         invoker => 
-                            (invoker.InvokerTag != "NONE" && dialogEvent.EventTargets.Contains(invoker.InvokerTag))
+                            (invoker.TargetTag != "NONE" && dialogEvent.EventTargets.Contains(invoker.TargetTag))
                         );
                 invokers.ForEach(speaker => speaker.Invoke(dialogEvent.EventName));
             }
@@ -165,7 +165,7 @@ namespace DialogSystem.Runtime.Dialogs
         private void ShowBranch(DialogBranchNode branchNode)
         {
             var selections = branchNode.Selections;
-            var selector = _selectors.Find(s => s.SelectorTag == branchNode.SelectorTag);
+            var selector = _selectors.Find(s => s.TargetTag == branchNode.SelectorTag);
             if (selector != null) {
                 selector.CreateSelections(selections,branchNode);
             }

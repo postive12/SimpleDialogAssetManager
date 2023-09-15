@@ -1,7 +1,8 @@
-﻿using DialogSystem.Structure;
+﻿using DialogSystem.Runtime.Dialogs.Components.Selections;
+using DialogSystem.Structure;
 using UnityEngine.EventSystems;
 
-namespace DialogSystem.Runtime.Dialogs.Selections
+namespace DialogSystem.Runtime.Dialogs.Interfaces
 {
     public interface ISelection
     {

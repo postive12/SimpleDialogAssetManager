@@ -1,20 +1,23 @@
-﻿using System;
-using System.Linq;
-using DialogSystem.Runtime.Dialogs.EventInvokers;
+﻿using DialogSystem.Dialogs.Components.Managers;
+using DialogSystem.Runtime.Dialogs.Interfaces;
 using UnityEngine;
 
-namespace DialogSystem.Runtime.Dialogs
+namespace DialogSystem.Dialogs.Components
 {
     public class DialogPlotSelector :MonoBehaviour, IEventInvoker
     {
+        private string _targetTag;
         private const string INVOKER_TAG = "DialogPlotSelector";
-        string IEventInvoker.InvokerTag {
+        string IDialogTarget.TargetTag {
             get {
-                return INVOKER_TAG;
+                return _targetTag;
             }
             set {
-                return;
+                _targetTag = value;
             }
+        }
+        public string GetTargetTag() {
+            return _targetTag;
         }
         private void Start()
         {
@@ -23,5 +26,6 @@ namespace DialogSystem.Runtime.Dialogs
         public void Invoke(string eventName) {
             DialogManager.Instance.SelectDialogPlot(eventName);
         }
+
     }
 }
