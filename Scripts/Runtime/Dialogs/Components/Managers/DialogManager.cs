@@ -176,7 +176,9 @@ namespace DialogSystem.Dialogs.Components.Managers
         /// <param name="plotId">Id of Plot</param>
         public void SelectDialogPlot(string plotId)
         {
-            Debug.Log("Select Dialog Plot: " + plotId);
+            #if UNITY_EDITOR
+                Debug.Log("Select Dialog Plot: " + plotId);
+            #endif
             if (!_currentSceneDialogPlots) {
                 StringBuilder error = new StringBuilder();
                 error.Append("No dialog set found!"); 
@@ -185,7 +187,7 @@ namespace DialogSystem.Dialogs.Components.Managers
             }
             _currentDialogPlot = _currentSceneDialogPlots.FindDialogById(plotId);
             if (_currentDialogPlot == null) {
-                Debug.LogError("Can't find dialog plot with id: " + plotId);
+                Debug.LogWarning("Can't find dialog plot with id: " + plotId);
                 return;
             }
             _currentDialogPlot.DialogPlotGraph.PlayPlot();
@@ -224,7 +226,7 @@ namespace DialogSystem.Dialogs.Components.Managers
                 error.Append("No dialog set found!");
                 error.Append("\n");
                 error.Append("Please create dialog set in Resources/Dialogs/ and name it as target scene name");
-                Debug.LogError(error.ToString());
+                Debug.LogWarning(error.ToString());
                 return;
             }
             //If dialog found, load the first dialog plot
