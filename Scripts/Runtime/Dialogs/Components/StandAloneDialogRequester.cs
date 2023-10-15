@@ -36,7 +36,7 @@ namespace DialogSystem.Dialogs.Components
         public void RequestDialog()
         {
             if (!_standAloneDialogManager) {
-                Debug.LogError("IndependentDialogManager is not implemented!");
+                Debug.LogError("StandAloneDialogManager is not implemented!");
                 return;
             }
             _standAloneDialogManager.RequestDialog();

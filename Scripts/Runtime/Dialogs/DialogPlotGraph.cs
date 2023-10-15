@@ -38,7 +38,7 @@ namespace DialogSystem.Runtime.Dialogs
             }
             //If can load next node, load next node
             if (!CurrentNode.IsNextExist()) {
-                Debug.LogWarning("Can't go next");
+                //Debug.LogWarning("Can't go next");
                 IsPlotEnd = true;
                 CurrentNode = null;
                 return;
