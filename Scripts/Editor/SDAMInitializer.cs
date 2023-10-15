@@ -20,7 +20,9 @@ namespace DialogSystem.Editor
             if (!AssetDatabase.IsValidFolder(SDAMConst.SDAM_ASSET_BASE_FOLDER + SDAMConst.SDAM_ASSET_FOLDER)) {
                 AssetDatabase.CreateFolder("Assets/Resources", "Dialogs");
             }
-            Debug.Log("SDAM: Asset folder is ready!");
+            #if UNITY_EDITOR
+                Debug.Log("SDAM: Asset folder is ready!");
+            #endif
         }
     }
 }

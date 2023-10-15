@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using DialogSystem.Dialogs.Components.Managers;
 using UnityEngine;
+using UnityEngine.Serialization;
 #if HAS_NEW_INPUT
 using UnityEngine.InputSystem;
 #endif
 
 namespace DialogSystem.Dialogs.Components
 {
-    public class IndependentDialogRequester : MonoBehaviour
+    public class StandAloneDialogRequester : MonoBehaviour
     {
-        [SerializeField] private IndependentDialogManager _independentDialogManager = null;
+        [SerializeField] private StandAloneDialogManager _standAloneDialogManager = null;
         #if HAS_NEW_INPUT
         [SerializeField] private List<Key> _requestKeyboardKey = new List<Key>();
         #else
@@ -34,11 +35,11 @@ namespace DialogSystem.Dialogs.Components
         }
         public void RequestDialog()
         {
-            if (!_independentDialogManager) {
+            if (!_standAloneDialogManager) {
                 Debug.LogError("IndependentDialogManager is not implemented!");
                 return;
             }
-            _independentDialogManager.RequestDialog();
+            _standAloneDialogManager.RequestDialog();
         }
     }
 }

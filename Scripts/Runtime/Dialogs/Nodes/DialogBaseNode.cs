@@ -1,4 +1,5 @@
 ﻿using System;
+using DialogSystem.Dialogs.Components.Managers;
 using DialogSystem.Structure;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -19,8 +20,15 @@ namespace DialogSystem.Nodes
         }
         [SerializeField] private bool _isEndPast = true;
         public abstract DialogBaseNode GetNext();
+        public abstract void Play(IDialogManager target);
         public virtual void ResetNode() { }
-        public virtual bool CanGoNext() { return true; }
+        public virtual bool IsNextExist() {
+            var port = GetOutputPort("Next");
+            return port.ConnectionCount > 0;
+        }
+        public virtual bool CanGetNext() {
+            return IsNextExist();
+        }
         public override object GetValue(NodePort port) {
             if (port.fieldName == "Next") return GetInputValue<DialogBaseNode>("Previous", Previous);
             else return null;

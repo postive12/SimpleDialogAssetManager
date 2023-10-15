@@ -16,7 +16,7 @@ namespace DialogSystem.Dialogs.Components.Managers
     /// The dialog manager that manage all dialog
     /// </summary>
     [RequireComponent(typeof(DialogPlotSelector))]
-    public class DialogManager : MonoBehaviour
+    public class DialogManager : MonoBehaviour, IDialogManager
     {
         /// <summary>
         /// Singleton instance of DialogManager
@@ -47,25 +47,21 @@ namespace DialogSystem.Dialogs.Components.Managers
         private static List<IEventInvoker> _eventInvokers = new List<IEventInvoker>();
         private static List<ISelector> _selectors = new List<ISelector>();
         /// <summary>
-        /// Add speaker to dialog manager
+        /// Add dialog target to dialog manager
         /// </summary>
-        /// <param name="dialogSpeaker"></param>
-        public static void AddSpeaker(DialogSpeaker dialogSpeaker) {
-            _speakers.Add(dialogSpeaker);
-        }
-        /// <summary>
-        /// Add event invoker to dialog manager
-        /// </summary>
-        /// <param name="eventInvoker"></param>
-        public static void AddEventInvoker(IEventInvoker eventInvoker) {
-            _eventInvokers.Add(eventInvoker);
-        }
-        /// <summary>
-        /// Add selector to dialog manager
-        /// </summary>
-        /// <param name="selector"></param>
-        public static void AddSelector(ISelector selector) {
-            _selectors.Add(selector);
+        /// <param name="dialogTarget"></param>
+        public static void AddDialogTarget(DialogTargetComponent dialogTarget) {
+            //_dialogTargets.Add(dialogTarget);
+            //Check what interface is implemented
+            if (dialogTarget is ISpeaker speaker) {
+                _speakers.Add(speaker);
+            }
+            if (dialogTarget is IEventInvoker eventInvoker) {
+                _eventInvokers.Add(eventInvoker);
+            }
+            if (dialogTarget is ISelector selector) {
+                _selectors.Add(selector);
+            }
         }
         private void Awake()
         {
@@ -96,79 +92,14 @@ namespace DialogSystem.Dialogs.Components.Managers
             if (_currentDialogPlot == null) return;
             if (_currentDialogPlot.DialogPlotGraph == null) return;
             //Debug.Log("_currentDialogPlot != null");
-            //If can't get next dialog node, return
-            if (!_currentDialogPlot.DialogPlotGraph.IsNextAvailable()) {
-                Debug.Log("Dialog Next Not Available");
-                return;
-            }
-            //Get next dialog node
-            var data = _currentDialogPlot.DialogPlotGraph.Next();
             //If dialog is end, return
             if (_currentDialogPlot.DialogPlotGraph.IsPlotEnd) {
                 Debug.Log("Dialog End");
                 EndPlot();
                 return;
             }
-            //If dialog node is null, return
-            if (data == null) {
-                StringBuilder error = new StringBuilder();
-                error.Append("Can't find type dialog node!");
-                error.Append("\n");
-                error.Append("You should not use other type of node in dialog graph!");
-                Debug.LogError(error.ToString());
-                return;
-            }
-            //Show dialog from dialog node
-            var type = data.Type;
-            switch (type) {
-                case DialogType.DIALOG:
-                    var dialogNode = data as DialogNode;
-                    if (dialogNode != null) ShowDialog(dialogNode);
-                    break;
-                case DialogType.BRANCH:
-                    var branchNode = data as DialogBranchNode;
-                    if (branchNode != null) ShowBranch(branchNode);
-                    break;
-            }
-        }
-        /// <summary>
-        /// Show dialog from dialog parameter
-        /// </summary>
-        /// <param name="dialog">The dialog that contains data</param>
-        public void ShowDialog(DialogNode dialogNode)
-        {
-            var dialog = dialogNode.Line;
-            if (dialog.SpeakerTag != "NONE") {
-                var targets = _speakers.FindAll(speaker => speaker.TargetTag == dialog.SpeakerTag);
-                targets.ForEach(target => target.Speak(dialog.DialogContent.Content));
-                foreach (var speaker in _speakers) {
-                    if (speaker.TargetTag == dialog.SpeakerTag) {
-                        speaker.Speak(dialog.DialogContent.Content);
-                    } else if(dialogNode.IsEndPast){
-                        speaker.EndSpeak();
-                    }
-                }
-            }
-            foreach (var dialogEvent in dialog.DialogEvents) {
-                var invokers = 
-                    _eventInvokers.FindAll(
-                        invoker => 
-                            (invoker.TargetTag != "NONE" && dialogEvent.EventTargets.Contains(invoker.TargetTag))
-                        );
-                invokers.ForEach(speaker => speaker.Invoke(dialogEvent.EventName));
-            }
-        }
-        /// <summary>
-        /// Show branch from branch node
-        /// </summary>
-        /// <param name="branchNode">Target branch node</param>
-        private void ShowBranch(DialogBranchNode branchNode)
-        {
-            var selections = branchNode.Selections;
-            var selector = _selectors.Find(s => s.TargetTag == branchNode.SelectorTag);
-            if (selector != null) {
-                selector.CreateSelections(selections,branchNode);
-            }
+            //Read Plot
+            _currentDialogPlot.DialogPlotGraph.Next(this);
         }
         /// <summary>
         /// Select dialog plot from dialog set
@@ -192,6 +123,37 @@ namespace DialogSystem.Dialogs.Components.Managers
             }
             _currentDialogPlot.DialogPlotGraph.PlayPlot();
             RequestDialog();
+        }
+        public void Play(DialogNode node)
+        {
+            var dialog = node.Line;
+            if (dialog.SpeakerTag != "NONE") {
+                var targets = _speakers.FindAll(speaker => speaker.TargetTag == dialog.SpeakerTag);
+                targets.ForEach(target => target.Speak(dialog.DialogContent.Content));
+                foreach (var speaker in _speakers) {
+                    if (speaker.TargetTag == dialog.SpeakerTag) {
+                        speaker.Speak(dialog.DialogContent.Content);
+                    } else if(node.IsEndPast){
+                        speaker.EndSpeak();
+                    }
+                }
+            }
+            foreach (var dialogEvent in dialog.DialogEvents) {
+                var invokers = 
+                    _eventInvokers.FindAll(
+                        invoker => 
+                            (invoker.TargetTag != "NONE" && dialogEvent.EventTargets.Contains(invoker.TargetTag))
+                    );
+                invokers.ForEach(speaker => speaker.Invoke(dialogEvent.EventName));
+            }
+        }
+        public void Play(DialogBranchNode node)
+        {
+            var selections = node.Selections;
+            var selector = _selectors.Find(s => s.TargetTag == node.SelectorTag);
+            if (selector != null) {
+                selector.CreateSelections(selections,node,this);
+            }
         }
         /// <summary>
         /// Invoke when dialog is end

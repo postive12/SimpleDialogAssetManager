@@ -4,12 +4,12 @@ using UnityEditor;
 
 namespace DialogSystem.Editor.Components
 {
-    [CustomEditor(typeof(IndependentDialogManager))]
+    [CustomEditor(typeof(StandAloneDialogManager))]
     public class IndependentDialogManagerEditor : UnityEditor.Editor
     {
-        private IndependentDialogManager _target;
+        private StandAloneDialogManager _target;
         private void OnEnable() {
-            _target = (IndependentDialogManager)serializedObject.targetObject;
+            _target = (StandAloneDialogManager)serializedObject.targetObject;
         }
         public override void OnInspectorGUI()
         {

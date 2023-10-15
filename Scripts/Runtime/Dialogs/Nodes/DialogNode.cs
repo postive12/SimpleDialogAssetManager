@@ -1,3 +1,4 @@
+using DialogSystem.Dialogs.Components.Managers;
 using DialogSystem.Structure;
 using UnityEngine;
 
@@ -15,6 +16,9 @@ namespace DialogSystem.Nodes
                 return null;
             }
             return port?.GetConnection(0)?.node as DialogBaseNode;
+        }
+        public override void Play(IDialogManager target) {
+            target.Play(this);
         }
     }
 }

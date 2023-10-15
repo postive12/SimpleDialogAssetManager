@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DialogSystem.Attributes;
+using DialogSystem.Dialogs.Components;
 using DialogSystem.Dialogs.Components.Managers;
 using DialogSystem.Nodes;
 using DialogSystem.Runtime.Dialogs.Interfaces;
@@ -8,29 +9,16 @@ using UnityEngine;
 
 namespace DialogSystem.Runtime.Dialogs.Components.Selections
 {
-    public class DialogSelector : MonoBehaviour,ISelector
+    public class DialogSelector : DialogTargetComponent , ISelector
     {
-        [DialogTagSelector][SerializeField] private string _selectorTag = "NONE";
         [SerializeField] private GameObject _selectionPrefab = null;
         [SerializeField] private List<DialogSelection> _selectionComponents = new List<DialogSelection>();
         private DialogBranchNode _targetNode = null;
-        string IDialogTarget.TargetTag {
-            get {
-                return _selectorTag;
-            }
-            set {
-                _selectorTag = value;
-            }
-        }
-        public string GetTargetTag() {
-            return _selectorTag;
-        }
-        private void Awake()
+        private IDialogManager _currentTargetManager = null;
+        public void CreateSelections(List<DialogContent> selections, DialogBranchNode node, IDialogManager currentTargetManager)
         {
-            DialogManager.AddSelector(this);
-        }
-        public void CreateSelections(List<DialogContent> selections, DialogBranchNode node)
-        {
+            Debug.Log("ShowSelections");
+            _currentTargetManager = currentTargetManager;
             _targetNode = node;
             int count = 0;
             for (count = 0; count  < selections.Count && count < _selectionComponents.Count; count++) {
@@ -50,16 +38,18 @@ namespace DialogSystem.Runtime.Dialogs.Components.Selections
         public void HideSelections()
         {
             foreach (var dialogSelection in _selectionComponents) {
+                Debug.Log("HideSelections");
                 dialogSelection.Hide();
             }
         }
         public void Select(int index)
         {
+            Debug.Log("Select : " + index);
             if(_targetNode == null) return;
             _targetNode.SelectIndex = index;
             _targetNode = null;
             HideSelections();
-            DialogManager.Instance.RequestDialog();
+            _currentTargetManager?.RequestDialog();
         }
     }
 }
