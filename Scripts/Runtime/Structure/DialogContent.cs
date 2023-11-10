@@ -1,7 +1,8 @@
 ﻿using System;
-using UnityEngine;
+using DialogSystem.Attributes;
+
 #if HAS_LOCALIZATION
-    using UnityEngine.Localization;
+using UnityEngine.Localization;
 #endif
 
 namespace DialogSystem.Structure
@@ -13,17 +14,24 @@ namespace DialogSystem.Structure
             get {
                 #if HAS_LOCALIZATION
                     //If engine has localization, load from string reference
-                    return StringReference.GetLocalizedString();
+                    if (_stringReference == "NONE") {
+                        return "";
+                    }
+                    var keys = _stringReference.Split('/');
+                    var localizedString = new LocalizedString();
+                    localizedString.TableReference = keys[0];
+                    localizedString.TableEntryReference = keys[1];
+                    return localizedString.GetLocalizedString();
                 #else
                     //If engine does not have localization, load from content
                     return _content;
                 #endif
-                
+
             }
         }
         //If engine has localization add string reference and preload function
         #if HAS_LOCALIZATION
-            [SerializeField] private LocalizedString StringReference;
+            [LocalizationSelector] public string _stringReference = "NONE";
         #else
             [SerializeField][TextArea] private string _content;
         #endif
