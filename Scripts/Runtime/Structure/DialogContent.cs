@@ -1,5 +1,6 @@
 ﻿using System;
 using DialogSystem.Attributes;
+using UnityEngine;
 
 #if HAS_LOCALIZATION
 using UnityEngine.Localization;
