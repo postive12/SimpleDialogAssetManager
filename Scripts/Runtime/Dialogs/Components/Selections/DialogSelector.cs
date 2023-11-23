@@ -38,13 +38,11 @@ namespace DialogSystem.Runtime.Dialogs.Components.Selections
         public void HideSelections()
         {
             foreach (var dialogSelection in _selectionComponents) {
-                Debug.Log("HideSelections");
                 dialogSelection.Hide();
             }
         }
         public void Select(int index)
         {
-            Debug.Log("Select : " + index);
             if(_targetNode == null) return;
             _targetNode.SelectIndex = index;
             _targetNode = null;

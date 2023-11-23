@@ -44,7 +44,6 @@ namespace DialogSystem.Dialogs.Components.Managers
             if (!_currentDialogPlot.DialogPlotGraph) return;
             //If dialog is end, return
             if (_currentDialogPlot.DialogPlotGraph.IsPlotEnd) {
-                Debug.Log("Dialog End");
                 EndPlot();
                 return;
             }
@@ -108,6 +107,9 @@ namespace DialogSystem.Dialogs.Components.Managers
         }
         public void EndPlot()
         {
+            #if UNITY_EDITOR
+                Debug.Log("Plot End");
+            #endif
             _currentDialogPlot = null;
             _speakers.ForEach(speaker => speaker.EndSpeak());
         }

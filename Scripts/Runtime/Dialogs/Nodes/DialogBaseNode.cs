@@ -12,7 +12,6 @@ namespace DialogSystem.Nodes
     {
         public DialogType Type { get; protected set; } = DialogType.DIALOG;
         [Input(backingValue = ShowBackingValue.Never)] public DialogBaseNode Previous;
-        [Output(backingValue = ShowBackingValue.Never)] public DialogBaseNode Next;
         public bool IsEndPast {
             get {
                 return _isEndPast;
