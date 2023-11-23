@@ -6,6 +6,7 @@ namespace DialogSystem.Nodes
 {
     public class DialogNode : DialogBaseNode {
         public Dialog Line => _line;
+        [Output(backingValue = ShowBackingValue.Never)] public DialogBaseNode Next;
         [SerializeField] private Dialog _line;
         public override DialogBaseNode GetNext() 
         {

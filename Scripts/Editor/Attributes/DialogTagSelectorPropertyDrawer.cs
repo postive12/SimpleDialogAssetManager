@@ -2,14 +2,12 @@
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
-
 namespace DialogSystem.Attributes
 {
     [CustomPropertyDrawer(typeof(DialogTagSelectorAttribute))]
     public class DialogTagSelectorPropertyDrawer : PropertyDrawer
     {
-        private List<string> _customTags = new List<string>() {
+        public static readonly List<string> CustomTags = new List<string>() {
             "====DialogCustomTag====",
             "DialogPlotSelector",
         };
@@ -29,7 +27,7 @@ namespace DialogSystem.Attributes
                     List<string> tagList = new List<string>();
                     tagList.Add("NONE");
                     tagList.AddRange(UnityEditorInternal.InternalEditorUtility.tags);
-                    tagList.AddRange(_customTags);
+                    tagList.AddRange(CustomTags);
                     string propertyString = property.stringValue;
                     int index = 0;
                     for (int i = 0; i < tagList.Count; i++) {
@@ -56,14 +54,13 @@ namespace DialogSystem.Attributes
         {
             //Check DialogPlotSelector tag is in the unity tag list
             var tagList = UnityEditorInternal.InternalEditorUtility.tags;
-            foreach (var tag in _customTags) {
+            foreach (var tag in CustomTags) {
                 if (tagList.Any(t => t == tag)) {
                     UnityEditorInternal.InternalEditorUtility.RemoveTag(tag);
                     Debug.LogError("You should not \"DialogPlotSelector\" as a tag, it is used by DialogPlotSelector.");
                     Debug.LogError("Automatically remove \"DialogPlotSelector\" tag from tag list.");
                 }
             }
-
         }
     }
 }

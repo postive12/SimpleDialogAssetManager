@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 namespace DialogSystem.Attributes
 {
     public class DialogTagSelectorAttribute : PropertyAttribute

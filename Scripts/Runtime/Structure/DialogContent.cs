@@ -1,9 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using DialogSystem.Attributes;
 using UnityEngine;
 
 #if HAS_LOCALIZATION
 using UnityEngine.Localization;
+using UnityEditor.Localization;
+#endif
+
+#if ODIN_INSPECTOR
+using Sirenix.OdinInspector;
+
 #endif
 
 namespace DialogSystem.Structure
@@ -32,7 +39,29 @@ namespace DialogSystem.Structure
         }
         //If engine has localization add string reference and preload function
         #if HAS_LOCALIZATION
-            [LocalizationSelector] public string _stringReference = "NONE";
+            #if ODIN_INSPECTOR
+                [LocalizationSelector]
+                [ValueDropdown("GetLocalizationList",IsUniqueList = false,DrawDropdownForListElements = true)]
+                [SerializeField]
+                private string _stringReference = "NONE";
+                private static IEnumerable<string> GetLocalizationList() {
+                    var list = new List<string>();
+                    list.Add("NONE");
+                    var collections = LocalizationEditorSettings.GetStringTableCollections();
+                    //parse to name list
+                    foreach (var stringTableCollection in collections) {
+                        var tableName = stringTableCollection.TableCollectionName;
+                        foreach (var sharedDataEntry in stringTableCollection.SharedData.Entries) {
+                            list.Add(tableName + "/" + sharedDataEntry.Key);
+                        }
+                    }
+                    return list;
+                }
+            #else
+                [LocalizationSelector]
+                [SerializeField]
+                private string _stringReference = "NONE";
+            #endif
         #else
             [SerializeField][TextArea] private string _content;
         #endif
