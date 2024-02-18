@@ -14,11 +14,7 @@ namespace DialogSystem.Structure
     {
         public string Content {
             #if HAS_LOCALIZATION
-            get
-            {
-                Debug.Log(_stringReference.GetLocalizedString());
-                return _stringReference.GetLocalizedString();
-            }
+            get => _stringReference.GetLocalizedString();
             #else
             get => _content;
             #endif
