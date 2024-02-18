@@ -1,8 +1,6 @@
 ﻿using System;
 using DialogSystem.Dialogs.Components.Managers;
 using DialogSystem.Structure;
-using Sirenix.Utilities;
-using UnityEditor;
 using UnityEngine;
 namespace DialogSystem.Nodes
 {
@@ -30,7 +28,7 @@ namespace DialogSystem.Nodes
         private bool _isPlayed = false;
 
         public DialogBaseNode() {
-            if (_guid.IsNullOrWhitespace()) {
+            if (string.IsNullOrEmpty(_guid)) {
                 _guid = System.Guid.NewGuid().ToString();
             }
         }

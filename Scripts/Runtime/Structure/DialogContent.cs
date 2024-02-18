@@ -5,12 +5,6 @@ using UnityEngine;
 
 #if HAS_LOCALIZATION
 using UnityEngine.Localization;
-using UnityEditor.Localization;
-#endif
-
-#if ODIN_INSPECTOR
-using Sirenix.OdinInspector;
-
 #endif
 
 namespace DialogSystem.Structure
