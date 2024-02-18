@@ -1,6 +1,6 @@
 # SimpleDialogAssetManager - SDAM
 
-The dialog system created with [xNode](https://github.com/Siccity/xNode) by postive
+The dialog system created by postive
 
 ## How to use
 
@@ -44,4 +44,4 @@ Essential Conditions:
 - You must create at least one localization table
 
 If you install the Unity Localization package, The SDAM will automatically replace the text area with the localized string.
-Then you can choose the localization phrase from the dropdown menu.
+Then you can choose the localization phrase from the localized string editor.
