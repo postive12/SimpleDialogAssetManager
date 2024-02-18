@@ -1,12 +1,11 @@
 ﻿using DialogSystem.Attributes;
 using DialogSystem.Dialogs.Components.Managers;
-using DialogSystem.Runtime.Dialogs.Interfaces;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace DialogSystem.Dialogs.Components
 {
-    public class DialogSpeaker : DialogTargetComponent, ISpeaker
+    public class DialogSpeaker : DialogTargetComponent
     {
         [SerializeField] private bool _disableRequestWhenSpeaking = false;
         [SerializeField] private bool _clearTextWhenEnd = false;

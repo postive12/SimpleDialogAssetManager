@@ -1,5 +1,4 @@
 ﻿using System;
-using DialogSystem.Runtime.Dialogs.Interfaces;
 using DialogSystem.Structure;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,9 +8,9 @@ namespace DialogSystem.Runtime.Dialogs.Components.Selections
 {
     //Add Button component when creating a new DialogSelection
     [RequireComponent(typeof(UnityEngine.UI.Button))]
-    public class DialogSelection : MonoBehaviour, ISelection
+    public class DialogSelection : MonoBehaviour
     {
-        int ISelection.SelectionIndex {
+        int SelectionIndex {
             get {
                 return _selectionIndex;
             }
@@ -19,7 +18,7 @@ namespace DialogSystem.Runtime.Dialogs.Components.Selections
                 _selectionIndex = value;
             }
         }
-        DialogSelector ISelection.ParentSelector {
+        DialogSelector ParentSelector {
             get {
                 return _parentSelector1;
             }

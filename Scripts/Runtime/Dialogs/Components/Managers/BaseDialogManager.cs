@@ -1,4 +1,6 @@
 ﻿using DialogSystem.Nodes;
+using DialogSystem.Nodes.Branches;
+using DialogSystem.Nodes.Lines;
 using UnityEngine;
 
 namespace DialogSystem.Dialogs.Components.Managers

@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using DialogSystem.Nodes;
+using DialogSystem.Nodes.Branches;
+using DialogSystem.Nodes.Lines;
 using DialogSystem.Runtime.Dialogs;
 using DialogSystem.Runtime.Dialogs.Components;
-using DialogSystem.Runtime.Dialogs.Interfaces;
+using DialogSystem.Runtime.Dialogs.Components.Selections;
 using DialogSystem.Structure;
 using DialogSystem.Structure.ScriptableObjects;
 using UnityEngine;
@@ -41,43 +43,36 @@ namespace DialogSystem.Dialogs.Components.Managers
         /// </summary>
         public bool IsPause { get; set; } = false;
         public bool IsStopRequest { get; set; } = false;
+        [SerializeField] private bool _useSingleton = true;
         [SerializeField] private SceneDialogPlots _currentSceneDialogPlots = null;
         [SerializeField] private DialogPlot _currentDialogPlot = null;
-        private static List<ISpeaker> _speakers = new List<ISpeaker>();
-        private static List<IEventInvoker> _eventInvokers = new List<IEventInvoker>();
-        private static List<ISelector> _selectors = new List<ISelector>();
+        [SerializeField] private List<DialogSpeaker> _speakers = new List<DialogSpeaker>();
+        [SerializeField] private List<DialogEventInvoker> _eventInvokers = new List<DialogEventInvoker>();
+        [SerializeField] private List<DialogSelector> _selectors = new List<DialogSelector>();
+
+        public DialogManager() {
+            if (_useSingleton) {
+                _instance = this;
+                SceneManager.sceneLoaded += OnSceneLoaded;
+                SceneManager.sceneUnloaded += OnSceneUnloaded;
+            }
+        }
         /// <summary>
         /// Add dialog target to dialog manager
         /// </summary>
         /// <param name="dialogTarget"></param>
-        public static void AddDialogTarget(DialogTargetComponent dialogTarget) {
+        public void AddDialogTarget(DialogTargetComponent dialogTarget) {
             //_dialogTargets.Add(dialogTarget);
             //Check what interface is implemented
-            if (dialogTarget is ISpeaker speaker) {
+            if (dialogTarget is DialogSpeaker speaker) {
                 _speakers.Add(speaker);
             }
-            if (dialogTarget is IEventInvoker eventInvoker) {
+            if (dialogTarget is DialogEventInvoker eventInvoker) {
                 _eventInvokers.Add(eventInvoker);
             }
-            if (dialogTarget is ISelector selector) {
+            if (dialogTarget is DialogSelector selector) {
                 _selectors.Add(selector);
             }
-        }
-        private void Awake()
-        {
-            if (_instance != null && _instance != this) {
-                Destroy(gameObject);
-                return;
-            }
-            //Make DialogManager dontdestroyonload
-            if (transform.parent != null && transform.root != null) {
-                DontDestroyOnLoad(transform.root.gameObject);
-            }
-            else {
-                DontDestroyOnLoad(gameObject);
-            }
-            SceneManager.sceneLoaded += OnSceneLoaded;
-            SceneManager.sceneUnloaded += OnSceneUnloaded;
         }
         /// <summary>
         /// Load dialog from dialog graph
@@ -91,8 +86,6 @@ namespace DialogSystem.Dialogs.Components.Managers
             //If current dialog plot is null, return
             if (_currentDialogPlot == null) return;
             if (_currentDialogPlot.DialogPlotGraph == null) return;
-            //Debug.Log("_currentDialogPlot != null");
-            //If dialog is end, return
             if (_currentDialogPlot.DialogPlotGraph.IsPlotEnd) {
                 Debug.Log("Dialog End");
                 EndPlot();
@@ -133,7 +126,7 @@ namespace DialogSystem.Dialogs.Components.Managers
                 foreach (var speaker in _speakers) {
                     if (speaker.TargetTag == dialog.SpeakerTag) {
                         speaker.Speak(dialog.DialogContent.Content);
-                    } else if(node.IsEndPast){
+                    } else if(node.IsPlayed){
                         speaker.EndSpeak();
                     }
                 }

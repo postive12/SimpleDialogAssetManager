@@ -1,26 +1,18 @@
 ﻿using System;
 using DialogSystem.Attributes;
 using DialogSystem.Dialogs.Components.Managers;
-using DialogSystem.Runtime.Dialogs.Interfaces;
 using UnityEngine;
 
 namespace DialogSystem.Dialogs.Components
 {
-    public class DialogTargetComponent : MonoBehaviour,IDialogTarget
+    public class DialogTargetComponent : MonoBehaviour
     {
-        string IDialogTarget.TargetTag {
-            get {
-                return _targetTag;
-            }
-            set {
-                _targetTag = value;
-            }
-        }
+        public string TargetTag => _targetTag;
         [DialogTagSelector][SerializeField] protected string _targetTag = "NONE";
         [SerializeField] protected bool _useDefaultDialogManager = true;
         protected virtual void Awake() {
             if (_useDefaultDialogManager) {
-                DialogManager.AddDialogTarget(this);
+                DialogManager.Instance.AddDialogTarget(this);
             }
         }
         public string GetTargetTag() => _targetTag;

@@ -3,13 +3,13 @@ using DialogSystem.Attributes;
 using DialogSystem.Dialogs.Components;
 using DialogSystem.Dialogs.Components.Managers;
 using DialogSystem.Nodes;
-using DialogSystem.Runtime.Dialogs.Interfaces;
+using DialogSystem.Nodes.Branches;
 using DialogSystem.Structure;
 using UnityEngine;
 
 namespace DialogSystem.Runtime.Dialogs.Components.Selections
 {
-    public class DialogSelector : DialogTargetComponent , ISelector
+    public class DialogSelector : DialogTargetComponent
     {
         [SerializeField] private GameObject _selectionPrefab = null;
         [SerializeField] private List<DialogSelection> _selectionComponents = new List<DialogSelection>();

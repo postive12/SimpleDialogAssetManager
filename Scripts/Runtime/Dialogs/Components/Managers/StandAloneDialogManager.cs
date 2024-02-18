@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using DialogSystem.Nodes;
+using DialogSystem.Nodes.Branches;
+using DialogSystem.Nodes.Lines;
 using DialogSystem.Runtime.Dialogs.Components.Selections;
 using DialogSystem.Structure;
 using DialogSystem.Structure.ScriptableObjects;
@@ -82,7 +84,7 @@ namespace DialogSystem.Dialogs.Components.Managers
                 foreach (var speaker in _speakers) {
                     if (speaker.GetTargetTag() == dialog.SpeakerTag) {
                         speaker.Speak(dialog.DialogContent.Content);
-                    } else if(node.IsEndPast){
+                    } else if(node.IsPlayed){
                         speaker.EndSpeak();
                     }
                 }

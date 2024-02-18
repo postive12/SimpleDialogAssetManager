@@ -1,0 +1,11 @@
+GridBackground {
+    --grid-background-color: rgb(40, 40, 40);
+    --line-color: rgba(192, 192, 192, 0.05);
+    --thick-line-color: rgba(192, 192, 192, 0.08);
+    --spacing: 15;
+}
+
+.panel-header {
+    margin-left: 0;
+    padding-left: 10px;
+}

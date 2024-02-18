@@ -1,4 +1,5 @@
 ﻿using DialogSystem;
+using DialogSystem.Runtime.Dialogs;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,7 +10,17 @@ namespace DialogSystem.Editor
     {
         static SDAMInitializer() {
             CheckAndCreateAssetFolder();
+            Selection.selectionChanged += OnSelectionChanged;
         }
+
+        private static void OnSelectionChanged()
+        {
+            DialogPlotGraph dialog = Selection.activeObject as DialogPlotGraph;
+            if(dialog != null && AssetDatabase.CanOpenAssetInEditor(dialog.GetInstanceID())) {
+                PlotEditorWindow.OpenWindow();
+            }
+        }
+
         public static void CheckAndCreateAssetFolder()
         {
             //check resource folder is exist

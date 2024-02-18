@@ -1,11 +1,10 @@
 ﻿using System;
 using DialogSystem.Dialogs.Components.Managers;
-using DialogSystem.Runtime.Dialogs.Interfaces;
 using UnityEngine;
 
 namespace DialogSystem.Dialogs.Components
 {
-    public class DialogPlotSelector : DialogTargetComponent, IEventInvoker
+    public class DialogPlotSelector : DialogTargetComponent
     {
         private const string INVOKER_TAG = "DialogPlotSelector";
         public void Invoke(string eventName) {
