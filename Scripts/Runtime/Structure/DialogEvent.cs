@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using DialogSystem.Attributes;
-namespace DialogSystem.Structure
+using DialogSystem.Runtime.Attributes;
+namespace DialogSystem.Runtime.Structure.ScriptableObjects
 {
     [Serializable]
     public class DialogEvent

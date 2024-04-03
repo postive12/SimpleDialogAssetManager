@@ -3,11 +3,10 @@ using System.Text;
 using DialogSystem.Nodes;
 using DialogSystem.Nodes.Branches;
 using DialogSystem.Nodes.Lines;
-using DialogSystem.Runtime.Dialogs;
-using DialogSystem.Runtime.Dialogs.Components;
-using DialogSystem.Runtime.Dialogs.Components.Selections;
-using DialogSystem.Structure;
-using DialogSystem.Structure.ScriptableObjects;
+using DialogSystem.Runtime;
+using DialogSystem.Runtime.Structure.ScriptableObjects.Components;
+using DialogSystem.Runtime.Structure.ScriptableObjects.Components.Selections;
+using DialogSystem.Runtime.Structure.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -44,8 +43,7 @@ namespace DialogSystem.Dialogs.Components.Managers
         public bool IsPause { get; set; } = false;
         public bool IsStopRequest { get; set; } = false;
         [SerializeField] private bool _useSingleton = true;
-        [SerializeField] private SceneDialogPlots _currentSceneDialogPlots = null;
-        [SerializeField] private DialogPlot _currentDialogPlot = null;
+        [SerializeField] private DialogPlotGraph _currentDialogPlot = null;
         [SerializeField] private List<DialogSpeaker> _speakers = new List<DialogSpeaker>();
         [SerializeField] private List<DialogEventInvoker> _eventInvokers = new List<DialogEventInvoker>();
         [SerializeField] private List<DialogSelector> _selectors = new List<DialogSelector>();
@@ -53,8 +51,6 @@ namespace DialogSystem.Dialogs.Components.Managers
         public DialogManager() {
             if (_useSingleton) {
                 _instance = this;
-                SceneManager.sceneLoaded += OnSceneLoaded;
-                SceneManager.sceneUnloaded += OnSceneUnloaded;
             }
         }
         /// <summary>
@@ -85,14 +81,13 @@ namespace DialogSystem.Dialogs.Components.Managers
             if (IsStopRequest) return;
             //If current dialog plot is null, return
             if (_currentDialogPlot == null) return;
-            if (_currentDialogPlot.DialogPlotGraph == null) return;
-            if (_currentDialogPlot.DialogPlotGraph.IsPlotEnd) {
+            if (_currentDialogPlot.IsPlotEnd) {
                 Debug.Log("Dialog End");
                 EndPlot();
                 return;
             }
             //Read Plot
-            _currentDialogPlot.DialogPlotGraph.Next(this);
+            _currentDialogPlot.Next(this);
         }
         /// <summary>
         /// Select dialog plot from dialog set
@@ -103,18 +98,18 @@ namespace DialogSystem.Dialogs.Components.Managers
             #if UNITY_EDITOR
                 Debug.Log("Select Dialog Plot: " + plotId);
             #endif
-            if (!_currentSceneDialogPlots) {
+            if (!_currentDialogPlot) {
                 StringBuilder error = new StringBuilder();
                 error.Append("No dialog set found!"); 
                 Debug.LogError(error.ToString());
                 return;
             }
-            _currentDialogPlot = _currentSceneDialogPlots.FindDialogById(plotId);
+            _currentDialogPlot = SDAManager.Instance.FindDialogPlot(plotId);
             if (_currentDialogPlot == null) {
                 Debug.LogWarning("Can't find dialog plot with id: " + plotId);
                 return;
             }
-            _currentDialogPlot.DialogPlotGraph.PlayPlot();
+            _currentDialogPlot.PlayPlot();
             RequestDialog();
         }
         public void Play(DialogNode node)
@@ -160,44 +155,9 @@ namespace DialogSystem.Dialogs.Components.Managers
         /// Get current dialog plot id
         /// </summary>
         /// <returns>The id of current plot</returns>
-        public string GetCurrentDialogPlotId()
-        {
+        public string GetCurrentDialogPlotId() {
             if (_currentDialogPlot == null) return string.Empty;
-            return _currentDialogPlot.PlotId;
-        }
-        /// <summary>
-        /// Load dialog set when scene loaded with scene name
-        /// </summary>
-        /// <param name="scene">Current Scene</param>
-        /// <param name="mode">Load mode</param>
-        private void OnSceneLoaded(Scene scene,LoadSceneMode mode)
-        {
-            //Find dialog set with scene name
-            var currentScene = scene.name;
-            _currentSceneDialogPlots = Resources.Load<SceneDialogPlots>(SDAMConst.SDAM_ASSET_FOLDER + currentScene);
-            //If dialog not found, throw error
-            if (!_currentSceneDialogPlots) {
-                StringBuilder error = new StringBuilder();
-                error.Append("No dialog set found!");
-                error.Append("\n");
-                error.Append("Please create dialog set in Resources/Dialogs/ and name it as target scene name");
-                Debug.LogWarning(error.ToString());
-                return;
-            }
-            //If dialog found, load the first dialog plot
-            if (_currentSceneDialogPlots.UseStartUpPlot) SelectDialogPlot(_currentSceneDialogPlots.StartUpPlotId);
-        }
-        /// <summary>
-        /// Reset all data when scene unloaded
-        /// </summary>
-        /// <param name="scene"></param>
-        private void OnSceneUnloaded(Scene scene)
-        {
-            _currentSceneDialogPlots = null;
-            _currentDialogPlot = null;
-            _eventInvokers.Clear();
-            _selectors.Clear();
-            _speakers.Clear();
+            return _currentDialogPlot.Id;
         }
         /// <summary>
         /// Clear all data when dialog manager disabled

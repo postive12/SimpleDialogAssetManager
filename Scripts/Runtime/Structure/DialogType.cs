@@ -1,4 +1,4 @@
-﻿namespace DialogSystem.Structure
+﻿namespace DialogSystem.Runtime.Structure.ScriptableObjects
 {
     public enum DialogType
     {

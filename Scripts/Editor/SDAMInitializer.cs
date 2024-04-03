@@ -1,5 +1,7 @@
-﻿using DialogSystem;
-using DialogSystem.Runtime.Dialogs;
+﻿using DialogSystem.Editor.CustomEditors;
+using DialogSystem.Editor.CustomEditors.PlotEditors;
+using DialogSystem.Runtime;
+using DialogSystem.Runtime.Structure.ScriptableObjects;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,7 +34,15 @@ namespace DialogSystem.Editor
                 AssetDatabase.CreateFolder("Assets/Resources", "Dialogs");
             }
             #if UNITY_EDITOR
-                Debug.Log("SDAM: Asset folder is ready!");
+            //check SDAMSettings is exist
+            SDAManager manager = AssetDatabase.LoadAssetAtPath<SDAManager>("Assets/Resources/SDAMSettings.asset");
+            if (!manager) {
+                manager = ScriptableObject.CreateInstance<SDAManager>();
+                AssetDatabase.CreateAsset(manager, "Assets/Resources/SDAMSettings.asset");
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+                Debug.Log("SDAM: SDAMSettings is ready!");
+            }
             #endif
         }
     }

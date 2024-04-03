@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using DialogSystem.Attributes;
+using DialogSystem.Runtime.Attributes;
 using DialogSystem.Dialogs.Components;
 using DialogSystem.Dialogs.Components.Managers;
 using DialogSystem.Nodes;
 using DialogSystem.Nodes.Branches;
-using DialogSystem.Structure;
+using DialogSystem.Runtime.Structure.ScriptableObjects;
 using UnityEngine;
 
-namespace DialogSystem.Runtime.Dialogs.Components.Selections
+namespace DialogSystem.Runtime.Structure.ScriptableObjects.Components.Selections
 {
     public class DialogSelector : DialogTargetComponent
     {

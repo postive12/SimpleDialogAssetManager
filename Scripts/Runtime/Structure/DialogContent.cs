@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using DialogSystem.Attributes;
+using DialogSystem.Runtime.Attributes;
 using UnityEngine;
 
 #if HAS_LOCALIZATION
 using UnityEngine.Localization;
 #endif
 
-namespace DialogSystem.Structure
+namespace DialogSystem.Runtime.Structure.ScriptableObjects
 {
     [Serializable]
     public class DialogContent

@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using DialogSystem.Runtime;
 using DialogSystem.Runtime.Attributes;
 using UnityEditor;
 using UnityEngine;
+
 namespace DialogSystem.Editor.Attributes
 {
-    [CustomPropertyDrawer(typeof(DialogTagSelectorAttribute))]
-    public class DialogTagSelectorPropertyDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(DialogSelectorAttribute))]
+    public class DialogSelectorDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -17,7 +17,7 @@ namespace DialogSystem.Editor.Attributes
                 //generate the taglist + custom tags
                 List<string> tagList = new List<string>();
                 tagList.Add("NONE");
-                tagList.AddRange(SDAManager.DialogTargetIds);
+                tagList.AddRange(SDAManager.DialogPaths);
                 string propertyString = property.stringValue;
                 int index = 0;
                 for (int i = 0; i < tagList.Count; i++) {

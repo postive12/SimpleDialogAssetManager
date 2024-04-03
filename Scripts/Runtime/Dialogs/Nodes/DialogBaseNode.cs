@@ -1,6 +1,6 @@
 ﻿using System;
 using DialogSystem.Dialogs.Components.Managers;
-using DialogSystem.Structure;
+using DialogSystem.Runtime.Structure.ScriptableObjects;
 using UnityEngine;
 namespace DialogSystem.Nodes
 {

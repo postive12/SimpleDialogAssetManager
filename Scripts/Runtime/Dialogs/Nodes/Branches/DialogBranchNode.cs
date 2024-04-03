@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using DialogSystem.Attributes;
+using DialogSystem.Runtime.Attributes;
 using DialogSystem.Dialogs.Components.Managers;
-using DialogSystem.Structure;
+using DialogSystem.Runtime.Structure.ScriptableObjects;
 using UnityEngine;
 
 namespace DialogSystem.Nodes.Branches
@@ -23,6 +23,9 @@ namespace DialogSystem.Nodes.Branches
         [DialogTagSelector]
         [SerializeField] private string _selectorTag = "Selections";
         [SerializeField] private List<DialogContent> _selections = new List<DialogContent>();
+        public DialogBranchNode() {
+            Type = DialogType.BRANCH;
+        }
         public override DialogBaseNode GetNext()
         {
             #if UNITY_EDITOR

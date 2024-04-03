@@ -1,4 +1,4 @@
-﻿using DialogSystem.Attributes;
+﻿using DialogSystem.Runtime.Attributes;
 using DialogSystem.Dialogs.Components.Managers;
 using UnityEngine;
 using UnityEngine.Events;

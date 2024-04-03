@@ -4,10 +4,11 @@ using System.Text;
 using DialogSystem.Nodes;
 using DialogSystem.Nodes.Branches;
 using DialogSystem.Nodes.Lines;
-using DialogSystem.Runtime.Dialogs.Components.Selections;
-using DialogSystem.Structure;
-using DialogSystem.Structure.ScriptableObjects;
+using DialogSystem.Runtime;
+using DialogSystem.Runtime.Structure.ScriptableObjects.Components.Selections;
+using DialogSystem.Runtime.Structure.ScriptableObjects;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace DialogSystem.Dialogs.Components.Managers
 {
@@ -19,10 +20,10 @@ namespace DialogSystem.Dialogs.Components.Managers
         public bool IsPause { get; set; } = false;
         public bool IsStopRequest { get; set; } = false;
         public bool UseStartUpPlot => _useStartUpPlot;
-        [SerializeField] private DialogPlotSet _dialogPlotSet = null;
+        [FormerlySerializedAs("_dialogPlotSet")] [SerializeField] private DialogPlotGroup _dialogPlotGroup = null;
         [SerializeField] private bool _useStartUpPlot = false;
         [SerializeField] private string _startUpPlotId = "NONE";
-        [SerializeField] private DialogPlot _currentDialogPlot = null;
+        [SerializeField] private DialogPlotGraph _currentDialogPlot = null;
         [SerializeField] private List<DialogSpeaker> _speakers = new List<DialogSpeaker>();
         [SerializeField] private List<DialogEventInvoker> _eventInvokers = new List<DialogEventInvoker>();
         [SerializeField] private List<DialogSelector> _selectors = new List<DialogSelector>();
@@ -43,14 +44,13 @@ namespace DialogSystem.Dialogs.Components.Managers
             if (IsStopRequest) return;
             //If current dialog plot is null, return
             if (_currentDialogPlot == null) return;
-            if (!_currentDialogPlot.DialogPlotGraph) return;
             //If dialog is end, return
-            if (_currentDialogPlot.DialogPlotGraph.IsPlotEnd) {
+            if (_currentDialogPlot.IsPlotEnd) {
                 EndPlot();
                 return;
             }
             //Read Plot
-            _currentDialogPlot.DialogPlotGraph.Next(this);
+            _currentDialogPlot.Next(this);
         }
         /// <summary>
         /// Select dialog plot from dialog set
@@ -61,18 +61,18 @@ namespace DialogSystem.Dialogs.Components.Managers
             #if UNITY_EDITOR
                 Debug.Log("Select Dialog Plot: " + plotId);
             #endif
-            if (!_dialogPlotSet) {
+            if (!_dialogPlotGroup) {
                 StringBuilder error = new StringBuilder();
                 error.Append("No dialog set found!"); 
                 Debug.LogError(error.ToString());
                 return;
             }
-            _currentDialogPlot = _dialogPlotSet.FindDialogById(plotId);
+            _currentDialogPlot = SDAManager.Instance.FindDialogPlot(plotId);
             if (_currentDialogPlot == null) {
                 Debug.LogError("Can't find dialog plot with id: " + plotId);
                 return;
             }
-            _currentDialogPlot.DialogPlotGraph.PlayPlot();
+            _currentDialogPlot.PlayPlot();
             RequestDialog();
         }
         public void Play(DialogNode node)

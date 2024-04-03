@@ -1,8 +1,8 @@
-﻿using DialogSystem.Structure.ScriptableObjects;
+﻿using DialogSystem.Runtime.Structure.ScriptableObjects;
 using UnityEditor;
 namespace DialogSystem.Editor
 {
-    [CustomEditor(typeof(DialogPlotSet))]
+    [CustomEditor(typeof(DialogPlotGroup))]
     public class DialogPlotSetEditor : UnityEditor.Editor
     {
         private static readonly string[] _excludeMemeber = new string[]{"m_Script"};
