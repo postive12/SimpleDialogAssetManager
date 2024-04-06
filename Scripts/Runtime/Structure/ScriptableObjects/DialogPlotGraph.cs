@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using DialogSystem.Dialogs.Components.Managers;
 using DialogSystem.Nodes;
 using DialogSystem.Nodes.Branches;
@@ -10,46 +11,50 @@ using UnityEngine;
 
 namespace DialogSystem.Runtime.Structure.ScriptableObjects
 {
-    [CreateAssetMenu(menuName = "DialogSystem/DialogPlotGraph", fileName = "DialogPlotGraph")]
     public class DialogPlotGraph : DialogScriptableObject
     {
         public int Length => Nodes.Count;
         public DialogBaseNode CurrentNode { get; private set; } = null;
-        [HideInInspector] public bool IsPlotEnd = true;
+        public int CurrentIndex => Nodes.IndexOf(CurrentNode);
+        public bool IsPlotEnd => CurrentNode == null;
+
         [HideInInspector] public DialogBaseNode StartNode = null;
         //Need to remake start and end point
         public List<DialogBaseNode> Nodes = new List<DialogBaseNode>();
         public DialogPlotGraph() {
-            _plotDataType = PlotDataType.PLOT;
+            _sdamDataType = SDAMDataType.PLOT;
         }
         public void PlayPlot() {
-            IsPlotEnd = false;
             CurrentNode = StartNode;
         }
-        public void Next(IDialogManager target) {
+        public bool Play(DialogManager manager) {
             if (IsPlotEnd) {
-                return;
+                return false;
             }
-            if (CurrentNode.CanGetNext()) {
-                var lastNode = CurrentNode;
-                var nextNode = CurrentNode.GetNext();
-                lastNode.ResetNode();
-                nextNode.ResetNode();
-                CurrentNode = nextNode;
-                CurrentNode.Play(target);
-            }
-            //If can load next node, load next node
-            if (!CurrentNode.IsNextExist()) {
-                //Debug.LogWarning("Can't go next");
-                IsPlotEnd = true;
-                CurrentNode = null;
-                return;
-            }
+            PlayNode(manager);
+            return true;
         }
-        protected override void OnValidate() {
-            base.OnValidate();
+        private void PlayNode(DialogManager manager) {
+            #if UNITY_EDITOR
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Current Play Request============\n");
+            #endif
+            while (CurrentNode != null && CurrentNode.IsAvailableToPlay) {
+                #if UNITY_EDITOR
+                sb.Append("Current Node : " + CurrentIndex + "\n");
+                #endif
+                CurrentNode.ResetNode();
+                CurrentNode.Play(manager);
+                CurrentNode = CurrentNode.IsNextExist ? CurrentNode.GetNext() : null;
+                if (CurrentNode == null || !CurrentNode.UseAutoPlay) {
+                    break;
+                }
+            }
+            #if UNITY_EDITOR
+            sb.Append("End Play Request============\n");
+            Debug.Log(sb.ToString());
+            #endif
         }
-
         #region Editor
         #if UNITY_EDITOR
         public DialogBaseNode CreateNode(Type type)

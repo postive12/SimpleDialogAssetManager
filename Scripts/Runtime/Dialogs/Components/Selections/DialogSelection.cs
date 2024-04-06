@@ -11,20 +11,8 @@ namespace DialogSystem.Runtime.Structure.ScriptableObjects.Components.Selections
     public class DialogSelection : MonoBehaviour
     {
         int SelectionIndex {
-            get {
-                return _selectionIndex;
-            }
-            set {
-                _selectionIndex = value;
-            }
-        }
-        DialogSelector ParentSelector {
-            get {
-                return _parentSelector1;
-            }
-            set {
-                _parentSelector1 = value;
-            }
+            get => _selectionIndex;
+            set => _selectionIndex = value;
         }
         [Header("Init Events")]
         [SerializeField] private UnityEvent<int> _onInitSelectionIndex;

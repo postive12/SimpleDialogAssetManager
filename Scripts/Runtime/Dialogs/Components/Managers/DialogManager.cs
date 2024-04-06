@@ -1,15 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using DialogSystem.Nodes;
-using DialogSystem.Nodes.Branches;
-using DialogSystem.Nodes.Lines;
 using DialogSystem.Runtime;
-using DialogSystem.Runtime.Structure.ScriptableObjects.Components;
+using DialogSystem.Runtime.Attributes;
 using DialogSystem.Runtime.Structure.ScriptableObjects.Components.Selections;
 using DialogSystem.Runtime.Structure.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 namespace DialogSystem.Dialogs.Components.Managers
 {
@@ -17,7 +13,7 @@ namespace DialogSystem.Dialogs.Components.Managers
     /// The dialog manager that manage all dialog
     /// </summary>
     [RequireComponent(typeof(DialogPlotSelector))]
-    public class DialogManager : MonoBehaviour, IDialogManager
+    public class DialogManager : MonoBehaviour
     {
         /// <summary>
         /// Singleton instance of DialogManager
@@ -42,23 +38,44 @@ namespace DialogSystem.Dialogs.Components.Managers
         /// </summary>
         public bool IsPause { get; set; } = false;
         public bool IsStopRequest { get; set; } = false;
+        public List<DialogSpeaker> Speakers => _speakers;
+        public List<DialogEventInvoker> EventInvokers => _eventInvokers;
+        public List<DialogSelector> Selectors => _selectors;
         [SerializeField] private bool _useSingleton = true;
+        [DialogSelector] [SerializeField] private string _startUpDialogPlotId = "NONE";
         [SerializeField] private DialogPlotGraph _currentDialogPlot = null;
         [SerializeField] private List<DialogSpeaker> _speakers = new List<DialogSpeaker>();
         [SerializeField] private List<DialogEventInvoker> _eventInvokers = new List<DialogEventInvoker>();
         [SerializeField] private List<DialogSelector> _selectors = new List<DialogSelector>();
-
         public DialogManager() {
             if (_useSingleton) {
                 _instance = this;
+                SceneManager.sceneLoaded += OnSceneLoaded;
             }
+        }
+        /// <summary>
+        /// Select dialog plot from dialog set
+        /// </summary>
+        /// <param name="plotId">Id of Plot</param>
+        public void SelectDialogPlot(string plotId)
+        {
+            #if UNITY_EDITOR
+                Debug.Log("Select Dialog Plot: " + plotId);
+            #endif
+            DialogPlotGraph plot = SDAManager.Instance.FindDialogPlot(plotId);
+            if (plot == null) {
+                Debug.LogWarning("Plot not found");
+                return;
+            }
+            _currentDialogPlot = plot;
+            _currentDialogPlot.PlayPlot();
+            Play();
         }
         /// <summary>
         /// Add dialog target to dialog manager
         /// </summary>
         /// <param name="dialogTarget"></param>
         public void AddDialogTarget(DialogTargetComponent dialogTarget) {
-            //_dialogTargets.Add(dialogTarget);
             //Check what interface is implemented
             if (dialogTarget is DialogSpeaker speaker) {
                 _speakers.Add(speaker);
@@ -73,7 +90,7 @@ namespace DialogSystem.Dialogs.Components.Managers
         /// <summary>
         /// Load dialog from dialog graph
         /// </summary>
-        public void RequestDialog()
+        public void Play()
         {
             //If dialog is paused, return
             if (IsPause) return;
@@ -87,60 +104,12 @@ namespace DialogSystem.Dialogs.Components.Managers
                 return;
             }
             //Read Plot
-            _currentDialogPlot.Next(this);
+            _currentDialogPlot.Play(this);
         }
-        /// <summary>
-        /// Select dialog plot from dialog set
-        /// </summary>
-        /// <param name="plotId">Id of Plot</param>
-        public void SelectDialogPlot(string plotId)
+        private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
-            #if UNITY_EDITOR
-                Debug.Log("Select Dialog Plot: " + plotId);
-            #endif
-            if (!_currentDialogPlot) {
-                StringBuilder error = new StringBuilder();
-                error.Append("No dialog set found!"); 
-                Debug.LogError(error.ToString());
-                return;
-            }
-            _currentDialogPlot = SDAManager.Instance.FindDialogPlot(plotId);
-            if (_currentDialogPlot == null) {
-                Debug.LogWarning("Can't find dialog plot with id: " + plotId);
-                return;
-            }
-            _currentDialogPlot.PlayPlot();
-            RequestDialog();
-        }
-        public void Play(DialogNode node)
-        {
-            var dialog = node.Line;
-            if (dialog.SpeakerTag != "NONE") {
-                var targets = _speakers.FindAll(speaker => speaker.TargetTag == dialog.SpeakerTag);
-                targets.ForEach(target => target.Speak(dialog.DialogContent.Content));
-                foreach (var speaker in _speakers) {
-                    if (speaker.TargetTag == dialog.SpeakerTag) {
-                        speaker.Speak(dialog.DialogContent.Content);
-                    } else if(node.IsPlayed){
-                        speaker.EndSpeak();
-                    }
-                }
-            }
-            foreach (var dialogEvent in dialog.DialogEvents) {
-                var invokers = 
-                    _eventInvokers.FindAll(
-                        invoker => 
-                            (invoker.TargetTag != "NONE" && dialogEvent.EventTargets.Contains(invoker.TargetTag))
-                    );
-                invokers.ForEach(speaker => speaker.Invoke(dialogEvent.EventName));
-            }
-        }
-        public void Play(DialogBranchNode node)
-        {
-            var selections = node.Selections;
-            var selector = _selectors.Find(s => s.TargetTag == node.SelectorTag);
-            if (selector != null) {
-                selector.CreateSelections(selections,node,this);
+            if (_startUpDialogPlotId != "NONE") {
+                SelectDialogPlot(_startUpDialogPlotId);
             }
         }
         /// <summary>
@@ -149,7 +118,7 @@ namespace DialogSystem.Dialogs.Components.Managers
         public void EndPlot()
         {
             _currentDialogPlot = null;
-            _speakers.ForEach(speaker => speaker.EndSpeak());
+            _speakers.ForEach(speaker => speaker.OnEndPlot());
         }
         /// <summary>
         /// Get current dialog plot id

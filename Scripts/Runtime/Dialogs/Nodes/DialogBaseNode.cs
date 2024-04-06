@@ -1,5 +1,7 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using DialogSystem.Dialogs.Components;
 using DialogSystem.Dialogs.Components.Managers;
+using DialogSystem.Runtime.Attributes;
 using DialogSystem.Runtime.Structure.ScriptableObjects;
 using UnityEngine;
 namespace DialogSystem.Nodes
@@ -18,6 +20,9 @@ namespace DialogSystem.Nodes
                 #endif
             }
         }
+        public abstract bool IsNextExist { get; }
+        public abstract bool IsAvailableToPlay { get; }
+        public abstract bool UseAutoPlay { get; }
         [HideInInspector][SerializeField] private string _guid = "";
         [HideInInspector][SerializeField] private Vector2 _position = new Vector2(0,0);
 
@@ -33,11 +38,9 @@ namespace DialogSystem.Nodes
             }
         }
         public abstract DialogBaseNode GetNext();
-        public abstract bool IsNextExist();
-        public abstract void Play(IDialogManager target);
-        public abstract bool CanGetNext();
+        public abstract void Play(DialogManager manager);
         public virtual void ResetNode() { }
-        public virtual void CheckIntegrity() { }
+        protected virtual void CheckIntegrity() { }
 
         public virtual void OnValidate() {
             CheckIntegrity();

@@ -28,9 +28,19 @@ namespace DialogSystem.Editor.CustomEditors.PlotEditors
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Plugins/SimpleDialogAssetManager/Scripts/Editor/CustomEditors/PlotEditors/PlotEditorWindow.uss");
             styleSheets.Add(styleSheet);
         }
+        public void ClearGraph()
+        {
+            _plot = null;
+            graphViewChanged -= OnGraphViewChanged;
+            DeleteElements(graphElements);
+        }
         public void PopulateView(DialogPlotGraph plot)
         {
             this._plot = plot;
+            if (plot == null) {
+                ClearGraph();
+                return;
+            }
             graphViewChanged -= OnGraphViewChanged;
             DeleteElements(graphElements);
             graphViewChanged += OnGraphViewChanged;
@@ -64,6 +74,9 @@ namespace DialogSystem.Editor.CustomEditors.PlotEditors
         }
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
+            if (_plot == null) {
+                return;
+            }
             var types = TypeCache.GetTypesDerivedFrom<SingleChildNode>().OrderBy(t => t.Name);
             Vector2 mousePosition = viewTransform.matrix.inverse.MultiplyPoint(evt.localMousePosition);
             //sort by abc

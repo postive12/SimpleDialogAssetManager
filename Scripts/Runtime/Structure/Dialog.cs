@@ -9,9 +9,10 @@ namespace DialogSystem.Runtime.Structure.ScriptableObjects
     public class Dialog
     {
         public List<DialogEvent> DialogEvents => _dialogEvents;
-        public DialogContent DialogContent => _dialogContent;
         [DialogTagSelector] public string SpeakerTag;
         [SerializeField] private List<DialogEvent> _dialogEvents;
         [SerializeField] private DialogContent _dialogContent;
+        public DialogContent DialogContent => _dialogContent;
+
     }
 }

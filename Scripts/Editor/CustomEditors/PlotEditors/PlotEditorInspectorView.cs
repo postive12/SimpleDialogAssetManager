@@ -1,5 +1,4 @@
-﻿using DialogSystem.Nodes;
-using UnityEngine.UIElements;
+﻿using UnityEngine.UIElements;
 
 namespace DialogSystem.Editor.CustomEditors.PlotEditors
 {

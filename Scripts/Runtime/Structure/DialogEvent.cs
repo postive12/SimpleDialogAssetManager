@@ -7,6 +7,6 @@ namespace DialogSystem.Runtime.Structure.ScriptableObjects
     public class DialogEvent
     {
         [DialogTagSelector] public List<string> EventTargets;
-        public string EventName;
+        public string EventMessage;
     }
 }

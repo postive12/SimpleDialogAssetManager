@@ -1,16 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.Text;
-using DialogSystem.Editor.CustomEditors;
 using DialogSystem.Runtime;
 using DialogSystem.Runtime.Structure.ScriptableObjects;
-using DialogSystem.Runtime.Structure.ScriptableObjects.Interface;
 using UnityEditor;
 using UnityEditor.Callbacks;
-using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.UIElements;
-using TreeView = UnityEngine.UIElements.TreeView;
 
 namespace DialogSystem.Editor.CustomEditors.PlotEditors
 {
@@ -20,19 +14,19 @@ namespace DialogSystem.Editor.CustomEditors.PlotEditors
         private DialogScriptableObject _currentSelectedData;
         private PlotGraphView _plotGraphView;
         private PlotEditorInspectorView _plotEditorInspectorView;
-        [MenuItem("Window/SDAM/Plot Editor Window")]
+        [MenuItem("Window/SDAM Plot Editor Window")]
         public static void OpenWindow()
         {
             PlotEditorWindow wnd = GetWindow<PlotEditorWindow>();
-            wnd.titleContent = new GUIContent("PlotEditorWindow");
+            wnd.titleContent = new GUIContent("Plot Editor");
         }
 
         [OnOpenAsset]
         public static bool OnOpenAsset(int instanceID, int line)
         {
-            DialogPlotGraph dialog = EditorUtility.InstanceIDToObject(instanceID) as DialogPlotGraph;
-            if (dialog != null && AssetDatabase.CanOpenAssetInEditor(dialog.GetInstanceID())) {
-                PlotEditorWindow.OpenWindow();
+            var data = EditorUtility.InstanceIDToObject(instanceID);
+            if (data is DialogScriptableObject or SDAManager && AssetDatabase.CanOpenAssetInEditor(instanceID)) {
+                OpenWindow();
                 return true;
             }
             return false;
@@ -57,15 +51,28 @@ namespace DialogSystem.Editor.CustomEditors.PlotEditors
             root.Q<Button>("sort").clicked += () => { _plotGraphView.SortNodes();};
             var nameTextField = root.Q<TextField>("plot-name");
             nameTextField.RegisterValueChangedCallback(evt => {
-                if (_currentSelectedData == null) return;
+                if (_currentSelectedData == null) {
+                    nameTextField.value = string.Empty;
+                    return;
+                }
                 _currentSelectedData.Id = evt.newValue;
             });
             var treeView = root.Q<PlotEditorTreeView>("plot-tree");
             treeView.OnSelectionChanged = (data) => {
+                if (data == null) {
+                    _plotGraphView.ClearGraph();
+                    _plotEditorInspectorView.Clear();
+                    nameTextField.value = string.Empty;
+                    _currentSelectedData = null;
+                    return;
+                }
                 _currentSelectedData = data;
                 nameTextField.value = data.Id;
                 if (data is DialogPlotGraph plot) {
                     _plotGraphView.PopulateView(plot);
+                }
+                else {
+                    _plotGraphView.ClearGraph();
                 }
             };
             //ctrl+s save shortcut
@@ -79,6 +86,7 @@ namespace DialogSystem.Editor.CustomEditors.PlotEditors
         }
         private void Save()
         {
+            if (_plotGraphView.Plot == null) return;
             StringBuilder log = new StringBuilder();
             log.AppendLine("Save Plot : " + _plotGraphView.Plot.name);
             log.AppendLine("Path : " + AssetDatabase.GetAssetPath(_plotGraphView.Plot));

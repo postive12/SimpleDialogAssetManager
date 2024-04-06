@@ -8,7 +8,7 @@ namespace DialogSystem.Dialogs.Components
     public class DialogEventInvoker : DialogTargetComponent
     {
         [SerializeField] private UnityEvent<string> _onInvokeEvent;
-        public void Invoke(string eventName) {
+        public void InvokeEvent(string eventName) {
             _onInvokeEvent?.Invoke(eventName);
         }
 

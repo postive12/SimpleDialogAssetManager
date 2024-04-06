@@ -7,8 +7,8 @@ namespace DialogSystem.Runtime.Structure.ScriptableObjects
 {
     public abstract class DialogScriptableObject : ScriptableObject, IDialogIdentifier
     {
-        public PlotDataType PlotDataType => _plotDataType;
-        protected PlotDataType _plotDataType = PlotDataType.NONE;
+        public SDAMDataType SDAMDataType => _sdamDataType;
+        protected SDAMDataType _sdamDataType = SDAMDataType.NONE;
         public virtual string GUID {
             get => _guid;
             set => _guid = value;
@@ -26,7 +26,6 @@ namespace DialogSystem.Runtime.Structure.ScriptableObjects
         [SDAMReadOnly][SerializeField] private string _id = "Unnamed";
         #if UNITY_EDITOR
         public Action OnDataChanged;
-        public Action OnDataHardChanged;
         #endif
         protected virtual void OnValidate() {
             #if UNITY_EDITOR

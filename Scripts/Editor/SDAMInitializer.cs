@@ -22,19 +22,9 @@ namespace DialogSystem.Editor
                 PlotEditorWindow.OpenWindow();
             }
         }
-
-        public static void CheckAndCreateAssetFolder()
+        private static void CheckAndCreateAssetFolder()
         {
             //check resource folder is exist
-            if (!AssetDatabase.IsValidFolder(SDAMConst.SDAM_ASSET_BASE_FOLDER)) {
-                AssetDatabase.CreateFolder("Assets", "Resources");
-            }
-            //check dialog folder is exist
-            if (!AssetDatabase.IsValidFolder(SDAMConst.SDAM_ASSET_BASE_FOLDER + SDAMConst.SDAM_ASSET_FOLDER)) {
-                AssetDatabase.CreateFolder("Assets/Resources", "Dialogs");
-            }
-            #if UNITY_EDITOR
-            //check SDAMSettings is exist
             SDAManager manager = AssetDatabase.LoadAssetAtPath<SDAManager>("Assets/Resources/SDAMSettings.asset");
             if (!manager) {
                 manager = ScriptableObject.CreateInstance<SDAManager>();
@@ -43,7 +33,6 @@ namespace DialogSystem.Editor
                 AssetDatabase.Refresh();
                 Debug.Log("SDAM: SDAMSettings is ready!");
             }
-            #endif
         }
     }
 }

@@ -36,7 +36,7 @@ namespace DialogSystem.Dialogs.Components
         }
         public void RequestDialog()
         {
-            DialogManager.Instance.RequestDialog();
+            DialogManager.Instance.Play();
         }
     }
 }
