@@ -23,9 +23,7 @@ namespace DialogSystem.Runtime
                 if (_instance == null) {
                     var loadedData = Resources.LoadAll<SDAManager>("");
                     _instance = loadedData.Length > 0 ? loadedData[0] : CreateInstance<SDAManager>();
-                    #if UNITY_EDITOR
                     _instance.Load();               
-                    #endif
                 }
                 return _instance;
             }
@@ -104,11 +102,12 @@ namespace DialogSystem.Runtime
             }
             return null;
         }
-        #if UNITY_EDITOR
+
         private void Load()
         {
             var loadedData = Resources.LoadAll<DialogDB>("");
             _dialogDB = loadedData.Length > 0 ? loadedData[0] : null;
+            #if UNITY_EDITOR
             if (_dialogDB == null) {
                 _dialogDB = CreateInstance<DialogDB>();
                 _dialogDB.Id = string.Empty;
@@ -118,7 +117,9 @@ namespace DialogSystem.Runtime
                 UnityEditor.AssetDatabase.SaveAssets();
             }
             CheckAndCreatePath();
+            #endif
         }
+        #if UNITY_EDITOR
         private void CheckAndCreatePath() {
             if (!UnityEditor.AssetDatabase.IsValidFolder(BASE_PATH + "/" + DATA_PATH)) {
                 UnityEditor.AssetDatabase.CreateFolder(BASE_PATH, DATA_PATH);
@@ -192,6 +193,7 @@ namespace DialogSystem.Runtime
             }
             if (findOwner is IDialogFinder finder) {
                 finder.DataList.Remove(data);
+                UnityEditor.EditorUtility.SetDirty(findOwner);
             }
             UnityEditor.AssetDatabase.RemoveObjectFromAsset(data);
             UnityEditor.AssetDatabase.SaveAssets();
