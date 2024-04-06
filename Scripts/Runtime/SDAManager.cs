@@ -4,9 +4,7 @@ using DialogSystem.Runtime.Attributes;
 using DialogSystem.Runtime.Structure.ScriptableObjects;
 using DialogSystem.Runtime.Structure.ScriptableObjects.Interface;
 using Sirenix.OdinInspector;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace DialogSystem.Runtime
 {
@@ -25,7 +23,9 @@ namespace DialogSystem.Runtime
                 if (_instance == null) {
                     var loadedData = Resources.LoadAll<SDAManager>("");
                     _instance = loadedData.Length > 0 ? loadedData[0] : CreateInstance<SDAManager>();
-                    _instance.Load();
+                    #if UNITY_EDITOR
+                    _instance.Load();               
+                    #endif
                 }
                 return _instance;
             }
@@ -113,21 +113,21 @@ namespace DialogSystem.Runtime
                 _dialogDB = CreateInstance<DialogDB>();
                 _dialogDB.Id = string.Empty;
                 _dialogDB.name = "DialogDB";
-                EditorUtility.SetDirty(_dialogDB);
-                AssetDatabase.AddObjectToAsset(_dialogDB, this);
-                AssetDatabase.SaveAssets();
+                UnityEditor.EditorUtility.SetDirty(_dialogDB);
+                UnityEditor.AssetDatabase.AddObjectToAsset(_dialogDB, this);
+                UnityEditor.AssetDatabase.SaveAssets();
             }
             CheckAndCreatePath();
         }
         private void CheckAndCreatePath() {
-            if (!AssetDatabase.IsValidFolder(BASE_PATH + "/" + DATA_PATH)) {
-                AssetDatabase.CreateFolder(BASE_PATH, DATA_PATH);
+            if (!UnityEditor.AssetDatabase.IsValidFolder(BASE_PATH + "/" + DATA_PATH)) {
+                UnityEditor.AssetDatabase.CreateFolder(BASE_PATH, DATA_PATH);
             }
-            if (!AssetDatabase.IsValidFolder(BASE_PATH + "/" + DATA_PATH + "/" + PLOT_PATH)) {
-                AssetDatabase.CreateFolder(BASE_PATH + "/" + DATA_PATH, PLOT_PATH);
+            if (!UnityEditor.AssetDatabase.IsValidFolder(BASE_PATH + "/" + DATA_PATH + "/" + PLOT_PATH)) {
+                UnityEditor.AssetDatabase.CreateFolder(BASE_PATH + "/" + DATA_PATH, PLOT_PATH);
             }
-            if (!AssetDatabase.IsValidFolder(BASE_PATH + "/" + DATA_PATH + "/" + GROUP_PATH)) {
-                AssetDatabase.CreateFolder(BASE_PATH + "/" + DATA_PATH, GROUP_PATH);
+            if (!UnityEditor.AssetDatabase.IsValidFolder(BASE_PATH + "/" + DATA_PATH + "/" + GROUP_PATH)) {
+                UnityEditor.AssetDatabase.CreateFolder(BASE_PATH + "/" + DATA_PATH, GROUP_PATH);
             }
         }
         #region Editor
@@ -169,16 +169,16 @@ namespace DialogSystem.Runtime
             //save to path
             if (parent == null) {
                 _dialogDB.DataList.Add(result);
-                EditorUtility.SetDirty(_dialogDB);
+                UnityEditor.EditorUtility.SetDirty(_dialogDB);
             }
             else {
                 if (parent is IDialogFinder finder) {
                     finder.DataList.Add(result);
-                    EditorUtility.SetDirty(parent);
+                    UnityEditor.EditorUtility.SetDirty(parent);
                 }
             }
-            AssetDatabase.CreateAsset(result, path + "/" + hash + ".asset");
-            AssetDatabase.SaveAssets();
+            UnityEditor.AssetDatabase.CreateAsset(result, path + "/" + hash + ".asset");
+            UnityEditor.AssetDatabase.SaveAssets();
         }
         public void DeleteData(DialogScriptableObject data) {
             if (data is DialogDB) {
@@ -193,9 +193,9 @@ namespace DialogSystem.Runtime
             if (findOwner is IDialogFinder finder) {
                 finder.DataList.Remove(data);
             }
-            AssetDatabase.RemoveObjectFromAsset(data);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+            UnityEditor.AssetDatabase.RemoveObjectFromAsset(data);
+            UnityEditor.AssetDatabase.SaveAssets();
+            UnityEditor.AssetDatabase.Refresh();
         }
         #endregion
         
